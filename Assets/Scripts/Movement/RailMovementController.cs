@@ -2,106 +2,92 @@ using UnityEngine;
 
 public class RailMovementController : MonoBehaviour
 {
-    [SerializeField] private FlightData data;    // ← assign your SO here
-    public float baseSpeed = 50f;
-    private float currentSpeed;
-    
-    // smoothing state
-    float smoothYawInput = 0f, yawInputVelocity = 0f;
-    float smoothPitchInput = 0f, pitchInputVelocity = 0f;
-    float currentRoll = 0f;
-    
+    [Header("Flight Data")]
+    [SerializeField] private FlightData data;
+
+    // Throttle state
+    private float rawThrottle, smoothThrottle, throttleVel;
+    // Speed & movement
+    private float currentSpeed, currentRoll;
+    // Raw rotational inputs
+    private float rawYaw, rawPitch;
+    // Smoothed rotational inputs
+    private float smoothYaw, yawVel;
+    private float smoothPitch, pitchVel;
 
     void Awake()
     {
-        currentSpeed = baseSpeed;
-        FlightInputController.OnThrottleChanged   += HandleThrottle;
-        FlightInputController.OnBoostActivated    += () => data.isBoosting = true;
-        FlightInputController.OnBoostDeactivated  += () => data.isBoosting = false;
-    }
+        if (data == null)
+            Debug.LogError("FlightData not assigned on " + name, this);
+        currentSpeed = (data != null) ? data.minSpeed : 0f;
 
-void OnEnable()
-{
-    FlightInputController.OnYawChanged   += HandleRawYaw;
-    FlightInputController.OnPitchChanged += HandleRawPitch;
-    FlightInputController.OnThrottleChanged   += HandleThrottle;
-    FlightInputController.OnBoostActivated    += () => data.isBoosting = true;
-    FlightInputController.OnBoostDeactivated  += () => data.isBoosting = false;
-}
-
-void OnDisable()
-{
-    FlightInputController.OnYawChanged   -= HandleRawYaw;
-    FlightInputController.OnPitchChanged -= HandleRawPitch;
-    FlightInputController.OnThrottleChanged   -= HandleThrottle;
-    FlightInputController.OnBoostActivated    -= () => data.isBoosting = true;
-    FlightInputController.OnBoostDeactivated  -= () => data.isBoosting = false;
-}
-
-
-   // these store the latest raw  -1..1  input
-    private float rawYaw, rawPitch;
-
-    void HandleRawYaw(float amount)
-    {
-        rawYaw = amount;
-    }
-
-    void HandleRawPitch(float amount)
-    {
-        rawPitch = amount;
+        FlightInputController.OnThrottleChanged += t => rawThrottle = t;
+        FlightInputController.OnYawChanged      += y => rawYaw      = y;
+        FlightInputController.OnPitchChanged    += p => rawPitch    = p;
+        FlightInputController.OnBoostActivated   += OnBoostOn;
+        FlightInputController.OnBoostDeactivated += OnBoostOff;
     }
 
     void OnDestroy()
     {
-        FlightInputController.OnThrottleChanged -= HandleThrottle;
+        FlightInputController.OnThrottleChanged -= t => rawThrottle = t;
+        FlightInputController.OnYawChanged      -= y => rawYaw      = y;
+        FlightInputController.OnPitchChanged    -= p => rawPitch    = p;
+        FlightInputController.OnBoostActivated   -= OnBoostOn;
+        FlightInputController.OnBoostDeactivated -= OnBoostOff;
     }
 
-    void HandleThrottle(float amount)
-    {
-        currentSpeed += data.throttleAcceleration * amount * Time.deltaTime;
-        currentSpeed  = Mathf.Clamp(currentSpeed, data.minSpeed, data.maxSpeed);
-        data.airspeed = currentSpeed;
-    }
+    private void OnBoostOn()  => data.isBoosting = true;
+    private void OnBoostOff() => data.isBoosting = false;
 
     void Update()
     {
+        if (data == null)
+            return;
+
         float dt = Time.deltaTime;
 
-        // 1) smooth the raw inputs
-        smoothYawInput = Mathf.SmoothDamp(
-            smoothYawInput, rawYaw,
-            ref yawInputVelocity,
-            data.yawSmoothTime,
-            Mathf.Infinity, dt
-        );
-        smoothPitchInput = Mathf.SmoothDamp(
-            smoothPitchInput, rawPitch,
-            ref pitchInputVelocity,
-            data.pitchSmoothTime,
-            Mathf.Infinity, dt
+        // Smooth throttle
+        smoothThrottle = Mathf.SmoothDamp(
+            smoothThrottle, rawThrottle, ref throttleVel,
+            Mathf.Max(data.throttleSmoothTime, 0.001f), Mathf.Infinity, dt
         );
 
-        // 2) apply yaw & bank off of the smoothed input
-        float yDelta = smoothYawInput * data.yawSpeed * dt;
-        transform.Rotate(0f, yDelta, 0f, Space.Self);
+        // Update speed with throttle & drag
+        currentSpeed += data.throttleAcceleration * smoothThrottle * dt;
+        currentSpeed -= data.dragCoefficient * currentSpeed * currentSpeed * dt;
 
-        float targetRoll = -smoothYawInput * data.maxBankAngle;
+        // Slope effect
+        float slope = Vector3.Dot(transform.forward, Vector3.up);
+        currentSpeed -= data.slopeEffect * slope * dt;
+
+        // Clamp and move
+        currentSpeed = Mathf.Clamp(currentSpeed, data.minSpeed, data.maxSpeed);
+        transform.Translate(Vector3.forward * currentSpeed * dt);
+
+        // Smooth rotational inputs
+        smoothYaw = Mathf.SmoothDamp(
+            smoothYaw, rawYaw, ref yawVel,
+            Mathf.Max(data.yawSmoothTime, 0.001f), Mathf.Infinity, dt
+        );
+        smoothPitch = Mathf.SmoothDamp(
+            smoothPitch, rawPitch, ref pitchVel,
+            Mathf.Max(data.pitchSmoothTime, 0.001f), Mathf.Infinity, dt
+        );
+
+        // Apply rotations
+        transform.Rotate(
+            smoothPitch * data.pitchSpeed * dt,
+            smoothYaw   * data.yawSpeed   * dt,
+            0f,
+            Space.Self
+        );
+
+        // Bank tilt
+        float targetRoll = -smoothYaw * data.maxBankAngle;
         currentRoll = Mathf.Lerp(currentRoll, targetRoll, data.bankLerpSpeed * dt);
-
-        // preserve X & Y, only override Z for bank
         Vector3 e = transform.localEulerAngles;
         e.z = currentRoll;
         transform.localEulerAngles = e;
-
-        // 3) apply pitch off of the smoothed input
-        float xDelta = smoothPitchInput * data.pitchSpeed * dt;
-        transform.Rotate(xDelta, 0f, 0f, Space.Self);
-
-        float speed = data.isBoosting 
-            ? currentSpeed * data.boostMultiplier 
-            : currentSpeed;
-
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 }

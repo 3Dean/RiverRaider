@@ -1767,7 +1767,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 5cf8b1a9f810cc74594b40d98a40e4a5, type: 2}
-  baseSpeed: 10
 --- !u!114 &2016356719
 MonoBehaviour:
   m_ObjectHideFlags: 0

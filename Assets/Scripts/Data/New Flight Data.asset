@@ -16,11 +16,16 @@ MonoBehaviour:
   maxSpeed: 200
   throttleAcceleration: 10
   boostMultiplier: 2
-  airspeed: 10
+  airspeed: 0
   isBoosting: 0
+  dragCoefficient: 0.05
+  throttleSmoothTime: 0.3
+  slopeEffect: 28
+  rotationSpringFrequency: 0.5
+  rotationDampingRatio: 0.7
   yawSpeed: 60
-  pitchSpeed: 45
-  maxBankAngle: 60
-  bankLerpSpeed: 6
-  yawSmoothTime: 0.05
-  pitchSmoothTime: 0.05
+  pitchSpeed: 60
+  maxBankAngle: 179
+  bankLerpSpeed: 3
+  yawSmoothTime: 0.1
+  pitchSmoothTime: 0.1
