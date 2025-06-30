@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 MemoryCaptures/
+Logs/
 *.csproj
 *.unityproj
 *.sln
@@ -12,3 +13,4 @@ MemoryCaptures/
 *.suo
 *.userprefs
 *.unitypackage
+*.log
