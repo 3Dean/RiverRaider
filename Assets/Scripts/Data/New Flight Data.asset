@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f9290cc6cab1244e9f7578d30f92644, type: 3}
+  m_Name: New Flight Data
+  m_EditorClassIdentifier: 
+  minSpeed: 10
+  maxSpeed: 200
+  throttleAcceleration: 10
+  boostMultiplier: 2
+  airspeed: 10
+  isBoosting: 0
+  yawSpeed: 60
+  pitchSpeed: 45
+  maxBankAngle: 60
+  bankLerpSpeed: 6
+  yawSmoothTime: 0.05
+  pitchSmoothTime: 0.05
