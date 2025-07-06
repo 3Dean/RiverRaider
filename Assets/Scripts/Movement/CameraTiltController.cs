@@ -23,9 +23,6 @@ public class CameraTiltController : MonoBehaviour
     {
         if (ship == null) return;
 
-        Vector3 e = ship.localEulerAngles;
-    Debug.Log($"Ship localEulerAngles → X: {e.x:F1}  Z: {e.z:F1}");
-
         // Get the ship's roll (Z-axis rotation) in [-180,180]
         float shipRoll = NormalizeAngle(ship.localEulerAngles.z);
 

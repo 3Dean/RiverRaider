@@ -5,6 +5,31 @@
 [Bb]uilds/
 MemoryCaptures/
 Logs/
+unity-docs-server/
+
+# Node.js (from MCP server files that ended up in Unity project)
+node_modules/
+package-lock.json
+package.json
+
+# Unity User Settings (personal editor preferences)
+UserSettings/
+
+# Additional Unity files that should be ignored
+*.tmp
+*.temp
+crashlytics-build.properties
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Unity generated files
 *.csproj
 *.unityproj
 *.sln

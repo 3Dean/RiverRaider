@@ -99,7 +99,7 @@ public class RailMovementController : MonoBehaviour
         e.z = currentRoll;
         transform.localEulerAngles = e;
 
-        //── 4) DEBUG LOG (optional) ───────────────────────────────
-        Debug.Log($"YawRate={smoothYaw:F1}°/s  LatAccel={lateralAccel:F1}m/s²  Bank={currentRoll:F1}°");
+        //── 4) UPDATE FLIGHT DATA ─────────────────────────────────
+        data.airspeed = currentSpeed;
     }
 }

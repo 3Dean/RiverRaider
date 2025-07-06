@@ -47,8 +47,11 @@ public class PlayerShipHealth : MonoBehaviour
 
     void UpdateHealthUI()
     {
-        // e.g. get your UI script and set the slider value
-        HealthBarUI.Instance.SetValue(currentHealth / maxHealth);
+        // TODO: Implement UI update when HealthBarUI is created
+        // Example: HealthBarUI.Instance?.SetValue(currentHealth / maxHealth);
+        
+        // For now, just log the health change for debugging
+        Debug.Log($"Player Health: {currentHealth:F1}/{maxHealth:F1} ({(currentHealth/maxHealth)*100:F0}%)");
     }
 
     void Die()

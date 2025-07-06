@@ -1,41 +1,106 @@
-// Assets/Scripts/Input/FlightInputController.cs
 using System;
 using UnityEngine;
 
-public class FlightInputController : MonoBehaviour {
+/// <summary>
+/// Centralized input controller for flight mechanics
+/// Uses events to decouple input from game logic
+/// </summary>
+public class FlightInputController : MonoBehaviour
+{
+    [Header("Input Settings")]
+    [SerializeField] private bool lockCursor = true;
+    
+    // Core flight events
     public static event Action<float> OnThrottleChanged;
     public static event Action<Vector2> OnLookChanged;
     public static event Action OnBoostActivated;
     public static event Action OnBoostDeactivated;
     public static event Action OnFireWeapon;
+    
+    // Individual axis events (for systems that need specific axes)
     public static event Action<float> OnYawChanged;
-public static event Action<float> OnPitchChanged;
+    public static event Action<float> OnPitchChanged;
 
+    private float lastThrottle = 0f;
+    private bool wasBoostPressed = false;
+    private bool wasFirePressed = false;
 
-    void Update() {
-        // Throttle (W/S)
-        float throttle = Input.GetKey(KeyCode.W)? 1f : Input.GetKey(KeyCode.S)? -1f : 0f;
-        OnThrottleChanged?.Invoke(throttle);
+    void Start()
+    {
+        if (lockCursor)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
 
-        // Mouse look
-        /*         Vector2 look = new Vector2(Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
-                OnLookChanged?.Invoke(look); */
+    void Update()
+    {
+        HandleThrottleInput();
+        HandleMouseInput();
+        HandleBoostInput();
+        HandleFireInput();
+    }
+
+    private void HandleThrottleInput()
+    {
+        float throttle = 0f;
+        if (Input.GetKey(KeyCode.W)) throttle = 1f;
+        else if (Input.GetKey(KeyCode.S)) throttle = -1f;
+
+        // Only invoke if throttle changed to reduce event spam
+        if (Mathf.Abs(throttle - lastThrottle) > 0.01f)
+        {
+            OnThrottleChanged?.Invoke(throttle);
+            lastThrottle = throttle;
+        }
+    }
+
+    private void HandleMouseInput()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        // Combined look vector
+        Vector2 lookInput = new Vector2(mouseX, -mouseY);
+        OnLookChanged?.Invoke(lookInput);
+
+        // Individual axes for systems that need them
+        OnYawChanged?.Invoke(mouseX);
+        OnPitchChanged?.Invoke(-mouseY);
+    }
+
+    private void HandleBoostInput()
+    {
+        bool isBoostPressed = Input.GetKey(KeyCode.LeftShift);
         
-         Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible   = false;
+        if (isBoostPressed && !wasBoostPressed)
+            OnBoostActivated?.Invoke();
+        else if (!isBoostPressed && wasBoostPressed)
+            OnBoostDeactivated?.Invoke();
+            
+        wasBoostPressed = isBoostPressed;
+    }
 
-    // read raw mouse axes
-    float mx = Input.GetAxis("Mouse X");
-    float my = Input.GetAxis("Mouse Y");
+    private void HandleFireInput()
+    {
+        bool isFirePressed = Input.GetKey(KeyCode.Space);
+        
+        if (isFirePressed && !wasFirePressed)
+            OnFireWeapon?.Invoke();
+            
+        wasFirePressed = isFirePressed;
+    }
 
-    OnYawChanged?.Invoke(mx);
-    OnPitchChanged?.Invoke(-my);
-
-        // Boost
-        if (Input.GetKeyDown(KeyCode.LeftShift)) OnBoostActivated?.Invoke();
-        if (Input.GetKeyUp(KeyCode.LeftShift))   OnBoostDeactivated?.Invoke();
-
-        // Fire
-        if (Input.GetKey(KeyCode.Space)) OnFireWeapon?.Invoke();
+    void OnDestroy()
+    {
+        // Clear all events to prevent memory leaks
+        OnThrottleChanged = null;
+        OnLookChanged = null;
+        OnBoostActivated = null;
+        OnBoostDeactivated = null;
+        OnFireWeapon = null;
+        OnYawChanged = null;
+        OnPitchChanged = null;
     }
 }
