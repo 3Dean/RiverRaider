@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 5508854380058487000}
   - component: {fileID: 6063622029465455625}
   - component: {fileID: 679325356054332802}
+  - component: {fileID: 6678122395964876609}
   m_Layer: 0
   m_Name: Chunk_LOD1
   m_TagString: Untagged
@@ -303,6 +304,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6678122395964876609
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4831370958631090683}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4332157153563468247, guid: fc26e068d89ddf245904994457db6670, type: 3}
 --- !u!1 &6954204051431819514
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,6 +368,7 @@ GameObject:
   - component: {fileID: 5096279421074516021}
   - component: {fileID: 3303623873547455670}
   - component: {fileID: 8906141460243346450}
+  - component: {fileID: 6294421870337438336}
   m_Layer: 0
   m_Name: Chunk_LOD2
   m_TagString: Untagged
@@ -417,6 +441,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6294421870337438336
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8914349550854550301}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4332157153563468247, guid: fc26e068d89ddf245904994457db6670, type: 3}
 --- !u!1 &9198213732443012845
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,6 +474,7 @@ GameObject:
   - component: {fileID: 5768456905508715118}
   - component: {fileID: 2799578886419116078}
   - component: {fileID: 8079892347239212949}
+  - component: {fileID: 1234567890123456780}
   m_Layer: 0
   m_Name: Chunk_LOD0
   m_TagString: Untagged
@@ -500,3 +547,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1234567890123456780
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9198213732443012845}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7358684381576057946, guid: fc26e068d89ddf245904994457db6670, type: 3}

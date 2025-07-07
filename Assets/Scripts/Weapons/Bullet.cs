@@ -17,10 +17,16 @@ public class Bullet : MonoBehaviour
     private float lifeTimer = 0f;
     private Vector3 velocity;
     private bool isActive = false;
+    private Rigidbody rb;
 
     // Properties for external access
     public float Speed { get => speed; set => speed = value; }
     public float Damage { get => damage; set => damage = value; }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void OnEnable()
     {
@@ -46,8 +52,17 @@ public class Bullet : MonoBehaviour
     {
         if (!isActive) return;
 
+        // Debug logging
+        Debug.Log($"Bullet hit: {other.name} on layer {other.gameObject.layer}");
+
         // Check if the collider is on a valid hit layer
-        if (((1 << other.gameObject.layer) & hitLayers) == 0) return;
+        if (((1 << other.gameObject.layer) & hitLayers) == 0) 
+        {
+            Debug.Log($"Hit rejected - layer {other.gameObject.layer} not in hitLayers mask {hitLayers.value}");
+            return;
+        }
+
+        Debug.Log($"Valid hit on {other.name}! Spawning hit effect.");
 
         // Handle hit effects
         SpawnHitEffect();
