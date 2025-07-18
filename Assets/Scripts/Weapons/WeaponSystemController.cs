@@ -47,7 +47,7 @@ public class WeaponSystemController : MonoBehaviour
         WeaponInputController.OnMachinegunFireEnd += OnMachinegunEnd;
         
         // Keep legacy support for FlightInputController
-        FlightInputController.OnFireWeapon += StartFiring;
+        FlightInputController.OnFirePressed += StartFiring;
     }
 
     void OnDisable()
@@ -58,7 +58,7 @@ public class WeaponSystemController : MonoBehaviour
         WeaponInputController.OnMachinegunFireEnd -= OnMachinegunEnd;
         
         // Legacy support cleanup
-        FlightInputController.OnFireWeapon -= StartFiring;
+        FlightInputController.OnFirePressed -= StartFiring;
     }
 
     void Update()

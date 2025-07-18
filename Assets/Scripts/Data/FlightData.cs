@@ -61,10 +61,24 @@ public class FlightData : MonoBehaviour
     [Tooltip("How much speed affects control sensitivity")]
     public float speedResponsivenessEffect = 1f;
 
+    [Header("Fuel Depletion Physics")]
+    [Tooltip("Gravity force applied when out of fuel (positive = downward)")]
+    public float gravityForce = 9.81f;
+    [Tooltip("Time in seconds for engine power to fade when fuel depleted")]
+    public float enginePowerFadeTime = 3f;
+    [Tooltip("Minimum speed before stall occurs (loss of control)")]
+    public float stallSpeed = 15f;
+    [Tooltip("Drag coefficient when gliding without power")]
+    public float glideDragCoefficient = 0.05f;
+
     [Header("Current Attitude (auto-updated)")]
     [HideInInspector] public float roll;
     [HideInInspector] public float pitch;
     [HideInInspector] public float yaw;
+    
+    [Header("Engine State (runtime)")]
+    [HideInInspector] public float enginePowerMultiplier = 1f;
+    [HideInInspector] public bool isEngineRunning = true;
 
     void Start()
     {
@@ -181,5 +195,43 @@ public class FlightData : MonoBehaviour
         // Higher speed = longer smooth time = less responsive
         float responsiveness = GetCurrentResponsiveness();
         return baseSmoothTime / responsiveness; // Lower responsiveness = higher smooth time
+    }
+    
+    // Engine power management methods
+    public void SetEnginePower(float powerMultiplier)
+    {
+        enginePowerMultiplier = Mathf.Clamp01(powerMultiplier);
+        isEngineRunning = enginePowerMultiplier > 0.01f;
+        
+        if (!isEngineRunning && Time.frameCount % 120 == 0) // Log every ~2 seconds
+        {
+            Debug.Log("ENGINE FAILURE - No fuel remaining!");
+        }
+    }
+    
+    public float GetEffectiveThrottlePower(float rawThrottle)
+    {
+        return rawThrottle * enginePowerMultiplier;
+    }
+    
+    public bool IsStalling()
+    {
+        return airspeed < stallSpeed;
+    }
+    
+    public bool IsGliding()
+    {
+        return !isEngineRunning && !IsStalling();
+    }
+    
+    // Restart engine when fuel is restored
+    public void RestartEngine()
+    {
+        if (HasFuel())
+        {
+            enginePowerMultiplier = 1f;
+            isEngineRunning = true;
+            Debug.Log("ENGINE RESTARTED - Fuel restored!");
+        }
     }
 }

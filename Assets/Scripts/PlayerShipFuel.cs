@@ -19,6 +19,19 @@ public class PlayerShipFuel : MonoBehaviour
     // State tracking
     private bool isRefueling = false;
     private bool isInitialized = false;
+    private bool wasOutOfFuel = false;
+    private float enginePowerFadeTimer = 0f;
+    
+    // Fuel depletion states
+    public enum FuelState
+    {
+        Normal,
+        Low,
+        Depleted,
+        Refueling
+    }
+    
+    private FuelState currentFuelState = FuelState.Normal;
 
     void Start()
     {
@@ -61,6 +74,9 @@ public class PlayerShipFuel : MonoBehaviour
     {
         if (!isInitialized) return;
         
+        // Update fuel state
+        UpdateFuelState();
+        
         // Handle fuel consumption and refueling
         if (isRefueling)
         {
@@ -72,14 +88,11 @@ public class PlayerShipFuel : MonoBehaviour
             flightData.ConsumeFuel(Time.deltaTime);
         }
         
+        // Handle fuel depletion mechanics
+        HandleFuelDepletion();
+        
         // Update UI
         UpdateFuelUI();
-        
-        // Handle out of fuel condition
-        if (!flightData.HasFuel())
-        {
-            HandleOutOfFuel();
-        }
     }
     
     private void HandleRefueling()
@@ -90,17 +103,71 @@ public class PlayerShipFuel : MonoBehaviour
         }
     }
     
-    private void HandleOutOfFuel()
+    private void UpdateFuelState()
     {
-        // You can add out-of-fuel logic here:
-        // - Reduce engine power
-        // - Force landing
-        // - Emergency procedures
-        // - etc.
+        float fuelPercentage = flightData.GetFuelPercentage();
         
-        if (Time.frameCount % 300 == 0) // Log every ~5 seconds
+        if (isRefueling)
         {
-            Debug.LogWarning("OUT OF FUEL! Find a fuel barge to refuel!");
+            currentFuelState = FuelState.Refueling;
+        }
+        else if (fuelPercentage <= 0f)
+        {
+            currentFuelState = FuelState.Depleted;
+        }
+        else if (fuelPercentage <= 0.2f) // Low fuel warning at 20%
+        {
+            currentFuelState = FuelState.Low;
+        }
+        else
+        {
+            currentFuelState = FuelState.Normal;
+        }
+    }
+    
+    private void HandleFuelDepletion()
+    {
+        bool isOutOfFuel = !flightData.HasFuel();
+        
+        if (isOutOfFuel)
+        {
+            // Handle transition to out of fuel state
+            if (!wasOutOfFuel)
+            {
+                wasOutOfFuel = true;
+                enginePowerFadeTimer = 0f;
+                Debug.LogWarning("FUEL DEPLETED! Engine power failing...");
+            }
+            
+            // Gradually reduce engine power over time
+            enginePowerFadeTimer += Time.deltaTime;
+            float fadeProgress = enginePowerFadeTimer / flightData.enginePowerFadeTime;
+            float enginePower = Mathf.Lerp(1f, 0f, fadeProgress);
+            
+            flightData.SetEnginePower(enginePower);
+            
+            // Log warnings periodically
+            if (Time.frameCount % 300 == 0) // Every ~5 seconds
+            {
+                if (flightData.isEngineRunning)
+                {
+                    Debug.LogWarning($"ENGINE FAILING! Power at {(enginePower * 100f):F0}% - Find fuel barge!");
+                }
+                else
+                {
+                    Debug.LogWarning("ENGINE DEAD! Gliding without power - Find fuel barge!");
+                }
+            }
+        }
+        else
+        {
+            // Handle recovery from out of fuel state
+            if (wasOutOfFuel)
+            {
+                wasOutOfFuel = false;
+                enginePowerFadeTimer = 0f;
+                flightData.RestartEngine();
+            }
         }
     }
 

@@ -47,20 +47,33 @@ public class RailMovementController : MonoBehaviour
         float dt = Time.deltaTime;
 
         //── 1) THROTTLE & FORWARD ─────────────────────────────────
-        // DEBUGGING: Check direct key input as fallback
+        // Primary: Use direct key input (more reliable)
         float directThrottle = 0f;
         if (Input.GetKey(KeyCode.W)) directThrottle = 1f;
         else if (Input.GetKey(KeyCode.S)) directThrottle = -1f;
         
-        // Use direct input if event system isn't working
-        if (rawThrottle == 0f && directThrottle != 0f)
+        // Use direct input as primary, fallback to event system
+        if (directThrottle != 0f)
         {
-            Debug.Log($"Using direct throttle input: {directThrottle} (rawThrottle was 0)");
             rawThrottle = directThrottle;
         }
+        // If no direct input and no event input, ensure throttle is 0
+        else if (rawThrottle == 0f)
+        {
+            rawThrottle = 0f;
+        }
+        
+        // Debug throttle input
+        if (directThrottle != 0f)
+        {
+            Debug.Log($"Direct throttle input: {directThrottle}");
+        }
+        
+        // Apply fuel depletion to throttle effectiveness
+        float effectiveThrottle = data.GetEffectiveThrottlePower(rawThrottle);
         
         smoothThrottle = Mathf.SmoothDamp(
-            smoothThrottle, rawThrottle, ref throttleVel,
+            smoothThrottle, effectiveThrottle, ref throttleVel,
             Mathf.Max(data.throttleSmoothTime, 0.001f), Mathf.Infinity, dt
         );
         // Calculate speed changes step by step for debugging
@@ -94,6 +107,43 @@ public class RailMovementController : MonoBehaviour
             string direction = slope > 0 ? "CLIMBING" : "DIVING";
             string effect = slopeSpeedChange > 0 ? "LOSING SPEED" : "GAINING SPEED";
             Debug.Log($"{direction} - Angle: {slopeAngle:F1}°, {effect}, Speed Change: {-slopeSpeedChange:F2}, Airspeed: {currentSpeed:F1}");
+        }
+        
+        //── FUEL DEPLETION PHYSICS ─────────────────────────────────
+        if (!data.isEngineRunning)
+        {
+            // Apply gravity when engine is not running
+            Vector3 gravityVector = Vector3.down * data.gravityForce * dt;
+            transform.Translate(gravityVector, Space.World);
+            
+            // Use glide drag coefficient for unpowered flight
+            float glideDragChange = data.glideDragCoefficient * currentSpeed * currentSpeed * dt;
+            currentSpeed -= glideDragChange;
+            
+            // Stall behavior - lose control at low speeds
+            if (data.IsStalling())
+            {
+                // Reduce control effectiveness when stalling
+                smoothYaw *= 0.3f;
+                smoothPitch *= 0.3f;
+                
+                // Apply additional downward force during stall
+                Vector3 stallForce = Vector3.down * data.gravityForce * 0.5f * dt;
+                transform.Translate(stallForce, Space.World);
+                
+                if (Time.frameCount % 180 == 0) // Log every ~3 seconds
+                {
+                    Debug.LogWarning($"STALLING! Speed: {currentSpeed:F1} MPH (below {data.stallSpeed} MPH)");
+                }
+            }
+            else if (data.IsGliding())
+            {
+                // Gliding - some control but no thrust
+                if (Time.frameCount % 240 == 0) // Log every ~4 seconds
+                {
+                    Debug.Log($"GLIDING - Speed: {currentSpeed:F1} MPH, Engine: OFF");
+                }
+            }
         }
         
         currentSpeed = Mathf.Clamp(currentSpeed, data.minSpeed, data.maxSpeed);
@@ -165,8 +215,8 @@ public class RailMovementController : MonoBehaviour
         transform.localEulerAngles = e;
 
         //── 4) UPDATE FLIGHT DATA ─────────────────────────────────
-        // DISABLED: Let other scripts control airspeed
-        // data.airspeed = currentSpeed;
+        // Update airspeed in FlightData for fuel consumption and UI systems
+        data.airspeed = currentSpeed;
         
         // Additional debugging every few seconds
         if (Time.time % 2f < Time.deltaTime) // Log every ~2 seconds

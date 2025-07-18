@@ -41,6 +41,15 @@ public class FlightSpeedController : MonoBehaviour
         {
             Debug.LogError("FlightSpeedController: No FlightData found in scene!", this);
         }
+        
+        // Subscribe to the modular input system instead of direct input
+        FlightInputController.OnThrottleChanged += HandleThrottleInput;
+    }
+    
+    void OnDestroy()
+    {
+        // Unsubscribe from input events
+        FlightInputController.OnThrottleChanged -= HandleThrottleInput;
     }
     
     void Update()
@@ -48,9 +57,6 @@ public class FlightSpeedController : MonoBehaviour
         if (!initialized) return;
         
         float deltaTime = Time.deltaTime;
-        
-        // Handle throttle input
-        HandleThrottleInput(deltaTime);
         
         // Handle slope effects
         HandleSlopeEffects(deltaTime);
@@ -66,25 +72,18 @@ public class FlightSpeedController : MonoBehaviour
         }
     }
     
-    private void HandleThrottleInput(float deltaTime)
+    private void HandleThrottleInput(float throttleInput)
     {
-        bool throttleChanged = false;
+        if (Mathf.Abs(throttleInput) < 0.01f) return; // Ignore very small inputs
         
-        if (Input.GetKey(KeyCode.W))
+        float deltaTime = Time.deltaTime;
+        float speedChange = throttleRate * throttleInput * deltaTime;
+        flightData.airspeed += speedChange;
+        
+        if (enableDebugLogging)
         {
-            flightData.airspeed += throttleRate * deltaTime;
-            throttleChanged = true;
-            
-            if (enableDebugLogging)
-                Debug.Log($"Throttle Up - Speed: {flightData.airspeed:F1} MPH");
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            flightData.airspeed -= throttleRate * deltaTime;
-            throttleChanged = true;
-            
-            if (enableDebugLogging)
-                Debug.Log($"Throttle Down - Speed: {flightData.airspeed:F1} MPH");
+            string direction = throttleInput > 0 ? "Up" : "Down";
+            Debug.Log($"Throttle {direction} - Speed: {flightData.airspeed:F1} MPH (Change: {speedChange:F1})");
         }
     }
     
