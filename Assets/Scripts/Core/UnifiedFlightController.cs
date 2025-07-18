@@ -15,14 +15,14 @@ public class UnifiedFlightController : MonoBehaviour
     
     [Header("Control Settings")]
     [SerializeField] private float throttleRate = 30f; // Speed change per second
-    [SerializeField] private float mouseYawSensitivity = 2f;
-    [SerializeField] private float mousePitchSensitivity = 2f;
+    [SerializeField] private float mouseYawSensitivity = 200f; // Significantly increased for low-speed responsiveness
+    [SerializeField] private float mousePitchSensitivity = 200f; // Significantly increased for low-speed responsiveness
     [SerializeField] private float controlSmoothTime = 0.1f;
     
     [Header("Physics Settings")]
     [SerializeField] private float dragCoefficient = 0.02f;
     [SerializeField] private float slopeEffect = 20f;
-    [SerializeField] private float bankingStrength = 30f;
+    [SerializeField] private float bankingStrength = 15f; // Reduced from 30f for more subtle banking
     [SerializeField] private float bankingSmoothTime = 0.2f;
     [SerializeField] private float liftForce = 15f; // Upward force to maintain altitude
     [SerializeField] private float minSpeedForLift = 5f; // Minimum speed needed for lift
@@ -34,6 +34,7 @@ public class UnifiedFlightController : MonoBehaviour
     // Core Components
     private FlightData flightData;
     private Transform aircraftTransform;
+    private Rigidbody aircraftRigidbody;
     
     // Input State
     private float currentThrottleInput = 0f;
@@ -41,10 +42,12 @@ public class UnifiedFlightController : MonoBehaviour
     private float currentMouseY = 0f;
     private bool firePressed = false;
     
-    // Control State
+    // Control State - Absolute rotation tracking for kinematic rigidbody
+    private float currentPitch = 0f;
+    private float currentYaw = 0f;
+    private float currentRoll = 0f;
     private float smoothYaw = 0f;
     private float smoothPitch = 0f;
-    private float currentRoll = 0f;
     private float yawVelocity = 0f;
     private float pitchVelocity = 0f;
     private float rollVelocity = 0f;
@@ -64,12 +67,27 @@ public class UnifiedFlightController : MonoBehaviour
         // Get required components
         flightData = GetComponent<FlightData>();
         aircraftTransform = transform;
+        aircraftRigidbody = GetComponent<Rigidbody>();
         
         if (flightData == null)
         {
             Debug.LogError("UnifiedFlightController: FlightData component is required!", this);
             enabled = false;
             return;
+        }
+        
+        if (aircraftRigidbody == null)
+        {
+            Debug.LogError("UnifiedFlightController: Rigidbody component is required!", this);
+            enabled = false;
+            return;
+        }
+        
+        // Ensure Rigidbody is kinematic for manual control
+        if (!aircraftRigidbody.isKinematic)
+        {
+            Debug.LogWarning("UnifiedFlightController: Setting Rigidbody to kinematic for manual flight control");
+            aircraftRigidbody.isKinematic = true;
         }
     }
     
@@ -89,10 +107,9 @@ public class UnifiedFlightController : MonoBehaviour
         
         // Update flight physics
         UpdateThrottle(deltaTime);
-        UpdateTurning(deltaTime);
+        UpdateFlightRotation(deltaTime); // Combined rotation system
         UpdateMovement(deltaTime);
         ApplyLift(deltaTime); // Add lift to maintain altitude
-        UpdateBanking(deltaTime);
         
         // Apply physics effects
         ApplyDrag(deltaTime);
@@ -156,27 +173,35 @@ public class UnifiedFlightController : MonoBehaviour
         // Cursor management for flight game - hide cursor but allow mouse input
         SetupCursorForGameplay();
         
-        currentMouseX = Input.GetAxis("Mouse X") * mouseYawSensitivity;
-        currentMouseY = Input.GetAxis("Mouse Y") * mousePitchSensitivity;
+        // Get raw mouse input first
+        float rawMouseX = Input.GetAxis("Mouse X");
+        float rawMouseY = Input.GetAxis("Mouse Y");
+        
+        currentMouseX = rawMouseX * mouseYawSensitivity;
+        currentMouseY = rawMouseY * mousePitchSensitivity;
         
         // Fire input
         firePressed = Input.GetKeyDown(fireKey);
         
-        // Debug mouse input
-        if (enableDebugLogging && (Mathf.Abs(currentMouseX) > 0.01f || Mathf.Abs(currentMouseY) > 0.01f))
+        // AGGRESSIVE DEBUG - Always log mouse input to see what's happening
+        if (enableDebugLogging && Time.frameCount % 10 == 0) // Every 10 frames
         {
-            Debug.Log($"Mouse Input: X={currentMouseX:F2}, Y={currentMouseY:F2}");
+            Debug.Log($"RAW Mouse: X={rawMouseX:F4}, Y={rawMouseY:F4} | SCALED: X={currentMouseX:F2}, Y={currentMouseY:F2}");
+        }
+        
+        // Also log when we detect ANY mouse movement
+        if (enableDebugLogging && (Mathf.Abs(rawMouseX) > 0.0001f || Mathf.Abs(rawMouseY) > 0.0001f))
+        {
+            Debug.Log($"MOUSE DETECTED! Raw: X={rawMouseX:F4}, Y={rawMouseY:F4} | Scaled: X={currentMouseX:F2}, Y={currentMouseY:F2}");
         }
     }
     
     private void SetupCursorForGameplay()
     {
-        // Hide cursor during gameplay to prevent clicking other windows
+        // TEMPORARY FIX: Don't lock cursor at all to test mouse input
+        // This ensures mouse input is captured properly
         Cursor.visible = false;
-        
-        // Confine cursor to game window but don't lock it completely
-        // This allows mouse movement for flight control while preventing window switching
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.None; // Changed from Confined to None
         
         // ESC key to show cursor temporarily (common game pattern)
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -185,7 +210,7 @@ public class UnifiedFlightController : MonoBehaviour
             {
                 // Hide cursor again
                 Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.lockState = CursorLockMode.None;
             }
             else
             {
@@ -215,17 +240,37 @@ public class UnifiedFlightController : MonoBehaviour
         }
     }
     
-    private void UpdateTurning(float deltaTime)
+    private void UpdateFlightRotation(float deltaTime)
     {
-        // Smooth the turning inputs
-        float targetYaw = currentMouseX;
-        float targetPitch = -currentMouseY; // Invert Y for natural feel
+        // Check if we have any mouse input
+        bool hasInput = Mathf.Abs(currentMouseX) > 0.01f || Mathf.Abs(currentMouseY) > 0.01f;
         
-        smoothYaw = Mathf.SmoothDamp(smoothYaw, targetYaw, ref yawVelocity, controlSmoothTime, Mathf.Infinity, deltaTime);
-        smoothPitch = Mathf.SmoothDamp(smoothPitch, targetPitch, ref pitchVelocity, controlSmoothTime, Mathf.Infinity, deltaTime);
-        
-        // Apply rotation
-        aircraftTransform.Rotate(smoothPitch * deltaTime, smoothYaw * deltaTime, 0f, Space.Self);
+        if (hasInput || Mathf.Abs(currentRoll) > 0.1f)
+        {
+            // KINEMATIC RIGIDBODY ROTATION - Use absolute Euler angle tracking
+            
+            // Update absolute rotation values based on mouse input
+            currentYaw += currentMouseX * deltaTime;
+            currentPitch += -currentMouseY * deltaTime; // Invert Y for natural feel
+            
+            // Calculate banking based on current yaw input (not accumulated yaw)
+            float targetRoll = -currentMouseX * bankingStrength * 0.1f; // Scale down banking
+            currentRoll = Mathf.SmoothDampAngle(currentRoll, targetRoll, ref rollVelocity, bankingSmoothTime, Mathf.Infinity, deltaTime);
+            
+            // Clamp pitch to prevent flipping
+            currentPitch = Mathf.Clamp(currentPitch, -45f, 45f);
+            
+            // Create final rotation from absolute Euler angles
+            Quaternion targetRotation = Quaternion.Euler(currentPitch, currentYaw, currentRoll);
+            
+            // Apply rotation directly to transform (works better with kinematic rigidbodies)
+            aircraftTransform.rotation = targetRotation;
+            
+            if (enableDebugLogging && Time.frameCount % 60 == 0)
+            {
+                Debug.Log($"KINEMATIC Rotation: Pitch={currentPitch:F1}°, Yaw={currentYaw:F1}°, Roll={currentRoll:F1}° | Mouse: X={currentMouseX:F2}, Y={currentMouseY:F2}");
+            }
+        }
     }
     
     private void UpdateMovement(float deltaTime)
@@ -235,24 +280,6 @@ public class UnifiedFlightController : MonoBehaviour
         aircraftTransform.Translate(forwardMovement, Space.World);
     }
     
-    private void UpdateBanking(float deltaTime)
-    {
-        // Calculate banking angle based on turn rate
-        float targetRoll = -smoothYaw * bankingStrength;
-        
-        // Smooth the banking
-        currentRoll = Mathf.SmoothDampAngle(currentRoll, targetRoll, ref rollVelocity, bankingSmoothTime, Mathf.Infinity, deltaTime);
-        
-        // Apply banking rotation (only roll, don't interfere with pitch/yaw)
-        Vector3 currentEuler = aircraftTransform.localEulerAngles;
-        currentEuler.z = currentRoll;
-        aircraftTransform.localEulerAngles = currentEuler;
-        
-        if (enableDebugLogging && Mathf.Abs(targetRoll) > 1f && Time.frameCount % 60 == 0)
-        {
-            Debug.Log($"Banking: Target={targetRoll:F1}°, Current={currentRoll:F1}°, YawInput={smoothYaw:F2}");
-        }
-    }
     
     private void ApplyDrag(float deltaTime)
     {

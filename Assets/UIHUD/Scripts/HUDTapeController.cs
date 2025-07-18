@@ -18,7 +18,7 @@ public class HUDTapeController : MonoBehaviour
     
     [Header("Flight Data References")]
     [SerializeField] private FlightData flightData;
-    [SerializeField] private AltimeterUI altimeterUI;
+    [SerializeField] private Transform aircraftTransform; // For altitude calculation
     
     [Header("Tape Settings")]
     [SerializeField] private float unitsPerTick = 1f; // 1 MPH or 1 foot increments
@@ -103,14 +103,29 @@ public class HUDTapeController : MonoBehaviour
             Debug.Log($"HUDTapeController ({tapeType}): FlightData found and assigned");
         }
         
-        // Find AltimeterUI if needed and not assigned
-        if (tapeType == TapeType.Altitude && altimeterUI == null)
+        // Find aircraft transform for altitude calculation if needed and not assigned
+        if (tapeType == TapeType.Altitude && aircraftTransform == null)
         {
-            altimeterUI = FindObjectOfType<AltimeterUI>();
-            if (altimeterUI == null)
+            // Try to find the aircraft by looking for FlightData component
+            if (flightData != null)
             {
-                Debug.LogError("HUDTapeController (Altitude): No AltimeterUI found in scene!", this);
-                return;
+                aircraftTransform = flightData.transform;
+                Debug.Log($"HUDTapeController (Altitude): Using FlightData transform for altitude calculation");
+            }
+            else
+            {
+                // Fallback: find any object with UnifiedFlightController
+                UnifiedFlightController flightController = FindObjectOfType<UnifiedFlightController>();
+                if (flightController != null)
+                {
+                    aircraftTransform = flightController.transform;
+                    Debug.Log($"HUDTapeController (Altitude): Using UnifiedFlightController transform for altitude calculation");
+                }
+                else
+                {
+                    Debug.LogError("HUDTapeController (Altitude): No aircraft transform found for altitude calculation!", this);
+                    return;
+                }
             }
         }
         
@@ -276,7 +291,8 @@ public class HUDTapeController : MonoBehaviour
             case TapeType.Speed:
                 return flightData != null ? flightData.airspeed : 0f;
             case TapeType.Altitude:
-                return altimeterUI != null ? altimeterUI.GetCurrentAltitude() : 0f;
+                // Get altitude directly from aircraft transform Y position
+                return aircraftTransform != null ? aircraftTransform.position.y : 0f;
             default:
                 return 0f;
         }

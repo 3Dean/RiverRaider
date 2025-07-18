@@ -55,11 +55,11 @@ public class FlightData : MonoBehaviour
     
     [Header("Speed-Dependent Responsiveness")]
     [Tooltip("Base responsiveness multiplier at minimum speed")]
-    public float baseResponsiveness = 1f;
+    public float baseResponsiveness = 2f; // Increased for better low-speed control
     [Tooltip("Responsiveness multiplier at maximum speed (lower = less responsive)")]
-    public float highSpeedResponsiveness = 0.3f;
+    public float highSpeedResponsiveness = 0.8f; // Increased to maintain control at high speed
     [Tooltip("How much speed affects control sensitivity")]
-    public float speedResponsivenessEffect = 1f;
+    public float speedResponsivenessEffect = 0.5f; // Reduced to lessen speed penalty
 
     [Header("Fuel Depletion Physics")]
     [Tooltip("Gravity force applied when out of fuel (positive = downward)")]
@@ -84,7 +84,13 @@ public class FlightData : MonoBehaviour
     {
         // Initialize health and fuel systems
         currentHealth = maxHealth;
-        currentFuel = maxFuel;
+        currentFuel = maxFuel; // Start with full fuel
+        
+        // Ensure engine is running with full fuel
+        enginePowerMultiplier = 1f;
+        isEngineRunning = true;
+        
+        Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Engine=ON");
     }
     
     void Update()

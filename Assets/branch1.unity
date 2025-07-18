@@ -190,7 +190,7 @@ MonoBehaviour:
   mainValueLabel: {fileID: 0}
   tickPrefab: {fileID: 962317990}
   flightData: {fileID: 2016356725}
-  altimeterUI: {fileID: 0}
+  aircraftTransform: {fileID: 0}
   unitsPerTick: 5
   tickSpacing: 30
   visibleTicks: 15
@@ -431,7 +431,7 @@ MonoBehaviour:
   mainValueLabel: {fileID: 0}
   tickPrefab: {fileID: 774348015}
   flightData: {fileID: 2016356725}
-  altimeterUI: {fileID: 0}
+  aircraftTransform: {fileID: 0}
   unitsPerTick: 5
   tickSpacing: 30
   visibleTicks: 15
@@ -3638,6 +3638,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2016356731}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2016356732}
   m_SourcePrefab: {fileID: 100100000, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
 --- !u!1 &2016356703 stripped
 GameObject:
@@ -3795,11 +3798,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9290cc6cab1244e9f7578d30f92644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 10
+  minSpeed: 30
   maxSpeed: 120
-  throttleAcceleration: 10
+  throttleAcceleration: 20
   boostMultiplier: 2
-  airspeed: 10
+  airspeed: 50
   isBoosting: 0
   maxHealth: 100
   currentHealth: 0
@@ -3815,9 +3818,9 @@ MonoBehaviour:
   rotationSpringFrequency: 1
   rotationDampingRatio: 0.009
   yawSpeed: 75
-  pitchSpeed: 50
-  maxBankAngle: 90
-  bankLerpSpeed: 0.3
+  pitchSpeed: 100
+  maxBankAngle: 60
+  bankLerpSpeed: 1
   yawSmoothTime: 0.2
   pitchSmoothTime: 0.18
   baseResponsiveness: 1
@@ -3940,6 +3943,19 @@ MonoBehaviour:
   disableFlightSpeedController: 1
   disableOldInputSystems: 1
   enableUnifiedFlightController: 1
+  enableDebugLogging: 1
+--- !u!114 &2016356732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016356703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f7e014ef541224cb0eb784221d0f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   enableDebugLogging: 1
 --- !u!1 &2135662608 stripped
 GameObject:
