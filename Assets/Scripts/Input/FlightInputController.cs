@@ -37,6 +37,11 @@ public class FlightInputController : MonoBehaviour
 
     void Start()
     {
+        // DISABLED - UnifiedFlightController is now handling all input
+        Debug.LogWarning("FlightInputController: DISABLED - UnifiedFlightController is handling input");
+        this.enabled = false;
+        return;
+        
         // Find the movement controller
         movementController = FindObjectOfType<RailMovementController>();
         

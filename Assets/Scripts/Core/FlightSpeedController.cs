@@ -25,25 +25,30 @@ public class FlightSpeedController : MonoBehaviour
     
     void Start()
     {
-        // Cache component references once (eliminates FindObjectOfType calls)
-        flightData = FindObjectOfType<FlightData>();
+        // DISABLED - UnifiedFlightController is now the primary controller
+        Debug.LogWarning("FlightSpeedController: DISABLED - UnifiedFlightController is handling flight control");
+        this.enabled = false;
+        return;
+        
+        // Find or create FlightData
+        flightData = GetComponent<FlightData>();
+        if (flightData == null)
+        {
+            flightData = FindObjectOfType<FlightData>();
+        }
         
         if (flightData != null)
         {
-            aircraftTransform = flightData.transform;
             flightData.airspeed = startingSpeed;
             initialized = true;
             
             if (enableDebugLogging)
-                Debug.Log($"FlightSpeedController: Initialized with starting speed {startingSpeed} MPH");
+                Debug.Log($"FlightSpeedController: Initialized on {gameObject.name} with speed {startingSpeed}");
         }
         else
         {
-            Debug.LogError("FlightSpeedController: No FlightData found in scene!", this);
+            Debug.LogError("FlightSpeedController: No FlightData found!", this);
         }
-        
-        // Subscribe to the modular input system instead of direct input
-        FlightInputController.OnThrottleChanged += HandleThrottleInput;
     }
     
     void OnDestroy()

@@ -190,7 +190,7 @@ MonoBehaviour:
   mainValueLabel: {fileID: 0}
   tickPrefab: {fileID: 962317990}
   flightData: {fileID: 2016356725}
-  aircraftTransform: {fileID: 0}
+  aircraftTransform: {fileID: 2016356711}
   unitsPerTick: 5
   tickSpacing: 30
   visibleTicks: 15
@@ -959,6 +959,7 @@ RectTransform:
   - {fileID: 1815974860}
   - {fileID: 911380287}
   - {fileID: 1995633002}
+  - {fileID: 2135662609}
   m_Father: {fileID: 689087076}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3025,7 +3026,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1995633002}
+    m_TransformParent: {fileID: 719781924}
     m_Modifications:
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_Pivot.x
@@ -3061,15 +3062,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.50000006
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.50000006
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.50000006
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3081,7 +3082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -404.555
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8524424544509167813, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3494,7 +3495,6 @@ RectTransform:
   - {fileID: 172806473}
   - {fileID: 1571071799}
   - {fileID: 966974191}
-  - {fileID: 2135662609}
   - {fileID: 103024692}
   - {fileID: 292660338}
   m_Father: {fileID: 719781924}
@@ -3521,12 +3521,12 @@ MonoBehaviour:
   useRollRotation: 1
   useYawRotation: 0
   usePitchRotation: 0
-  rollMultiplier: 1
+  rollMultiplier: 0.5
   yawMultiplier: 0
   pitchMultiplier: 0
   maxRotationAngle: 45
   useSmoothRotation: 1
-  rotationSmoothTime: 0.2
+  rotationSmoothTime: 0.1
 --- !u!1001 &2016356702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3635,12 +3635,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2016356729}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2016356731}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2016356732}
   m_SourcePrefab: {fileID: 100100000, guid: e66fe2af5a025494880b070ff7a5fa3d, type: 3}
 --- !u!1 &2016356703 stripped
 GameObject:
@@ -3798,7 +3792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9290cc6cab1244e9f7578d30f92644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 30
+  minSpeed: 0
   maxSpeed: 120
   throttleAcceleration: 20
   boostMultiplier: 2
@@ -3807,7 +3801,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   healAmount: 25
-  maxFuel: 100
+  maxFuel: 200
   currentFuel: 0
   baseFuelConsumption: 1
   speedFuelMultiplier: 0.02
@@ -3816,13 +3810,13 @@ MonoBehaviour:
   slopeEffect: 20
   maxSlopeAngle: 45
   rotationSpringFrequency: 1
-  rotationDampingRatio: 0.009
-  yawSpeed: 75
-  pitchSpeed: 100
-  maxBankAngle: 60
-  bankLerpSpeed: 1
-  yawSmoothTime: 0.2
-  pitchSmoothTime: 0.18
+  rotationDampingRatio: 0.031
+  yawSpeed: 3
+  pitchSpeed: 4
+  maxBankAngle: 45
+  bankLerpSpeed: 2
+  yawSmoothTime: 1
+  pitchSmoothTime: 1
   baseResponsiveness: 1
   highSpeedResponsiveness: 0.7
   speedResponsivenessEffect: 1
@@ -3915,48 +3909,15 @@ MonoBehaviour:
   throttleUpKey: 119
   throttleDownKey: 115
   fireKey: 32
-  throttleRate: 30
-  mouseYawSensitivity: 2
-  mousePitchSensitivity: 2
-  controlSmoothTime: 0.1
-  dragCoefficient: 0.02
-  slopeEffect: 20
-  bankingStrength: 30
-  bankingSmoothTime: 0.2
+  levelFlightKey: 108
   liftForce: 15
   minSpeedForLift: 5
+  useFlightDataSettings: 1
   enableDebugLogging: 1
   showOnScreenDebug: 1
---- !u!114 &2016356731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016356703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65824aed13d638e44bd7905c24383bad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  disableSimpleFlightController: 1
-  disableFlightSpeedController: 1
-  disableOldInputSystems: 1
-  enableUnifiedFlightController: 1
-  enableDebugLogging: 1
---- !u!114 &2016356732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016356703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9f7e014ef541224cb0eb784221d0f75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDebugLogging: 1
+  throttleStepSize: 0.05
+  keyRepeatDelay: 0.5
+  keyRepeatRate: 0.2
 --- !u!1 &2135662608 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5567868813287497981, guid: f507078edb08eb24c838d50b1fd8062f, type: 3}

@@ -5,7 +5,7 @@ public class FlightData : MonoBehaviour
     [Header("Speed Settings")]
     public float minSpeed = 10f;
     public float maxSpeed = 200f;
-    public float throttleAcceleration = 50f; // Much more responsive throttle
+    public float throttleAcceleration = 100f; // INCREASED for testing - was 50f
     public float boostMultiplier = 2f;
 
     [Header("Runtime")]
@@ -31,7 +31,7 @@ public class FlightData : MonoBehaviour
 
     [Header("Slope Speed Effect")]
     [Tooltip("How strongly climbing slows you, and diving speeds you up (try 30-50 for noticeable effect)")]
-    public float slopeEffect = 100f; // Much more dramatic slope effects
+    public float slopeEffect = 20f; // Reduced for better control balance - was 100f
     [Tooltip("Maximum slope angle (degrees) that affects speed")]
     public float maxSlopeAngle = 45f;
 
@@ -43,23 +43,23 @@ public class FlightData : MonoBehaviour
     public float rotationDampingRatio = 0.7f;
 
     [Header("Mouse Look & Bank")]
-    public float yawSpeed = 60f;      // deg/sec per unit of Mouse X  
-    public float pitchSpeed = 45f;    // deg/sec per unit of Mouse Y  
-    public float maxBankAngle = 30f;  // maximum roll tilt at full turn  
-    public float bankLerpSpeed = 2f;  // how quickly we interpolate toward that tilt 
+    public float yawSpeed = 15f;      // deg/sec per unit of Mouse X (reduced from 60)
+    public float pitchSpeed = 12f;    // deg/sec per unit of Mouse Y (reduced from 45)
+    public float maxBankAngle = 45f;  // maximum roll tilt at full turn - increased for dramatic banking
+    public float bankLerpSpeed = 4f;  // Increased for even more responsive banking
 
     [Header("Rotational Inertia")]
     [Tooltip("Higher = smoother (more sluggish)")]
-    public float yawSmoothTime = 0.1f;
-    public float pitchSmoothTime = 0.1f;
+    public float yawSmoothTime = 0.3f;  // Consistent with pitch for uniform feel
+    public float pitchSmoothTime = 0.3f; // Matched to yaw for consistent response
     
     [Header("Speed-Dependent Responsiveness")]
     [Tooltip("Base responsiveness multiplier at minimum speed")]
-    public float baseResponsiveness = 2f; // Increased for better low-speed control
+    public float baseResponsiveness = 1.2f; // Increased for more responsive low-speed control
     [Tooltip("Responsiveness multiplier at maximum speed (lower = less responsive)")]
-    public float highSpeedResponsiveness = 0.8f; // Increased to maintain control at high speed
+    public float highSpeedResponsiveness = 0.8f; // Less penalty at high speeds
     [Tooltip("How much speed affects control sensitivity")]
-    public float speedResponsivenessEffect = 0.5f; // Reduced to lessen speed penalty
+    public float speedResponsivenessEffect = 0.6f; // Gentler speed effect curve
 
     [Header("Fuel Depletion Physics")]
     [Tooltip("Gravity force applied when out of fuel (positive = downward)")]
@@ -86,19 +86,24 @@ public class FlightData : MonoBehaviour
         currentHealth = maxHealth;
         currentFuel = maxFuel; // Start with full fuel
         
+        // CRITICAL FIX: Initialize airspeed to a reasonable starting value
+        if (airspeed == 0f)
+        {
+            airspeed = (minSpeed + maxSpeed) * 0.25f; // Start at 25% of speed range
+            Debug.Log($"FlightData: Initialized airspeed to {airspeed:F1} MPH");
+        }
+        
         // Ensure engine is running with full fuel
         enginePowerMultiplier = 1f;
         isEngineRunning = true;
         
-        Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Engine=ON");
+        Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Engine=ON, Airspeed={airspeed:F1}");
     }
     
     void Update()
     {
-        Vector3 e = transform.eulerAngles;
-        roll  = NormalizeAngle(e.z);
-        pitch = NormalizeAngle(e.x);
-        yaw   = NormalizeAngle(e.y);
+        // Attitude values are now updated directly by UnifiedFlightController
+        // This prevents conflicts and ensures UI gets accurate rotation data
     }
 
     float NormalizeAngle(float a)

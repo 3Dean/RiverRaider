@@ -11,6 +11,14 @@ public class SimpleSpeedTest : MonoBehaviour
     
     void Update()
     {
+        // DISABLED - UnifiedFlightController is now handling all flight control
+        if (!initialized)
+        {
+            Debug.LogWarning("SimpleSpeedTest: DISABLED - UnifiedFlightController is handling flight control");
+            initialized = true;
+        }
+        return;
+        
         // Find the FlightData component
         FlightData flightData = FindObjectOfType<FlightData>();
         

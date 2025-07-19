@@ -29,6 +29,11 @@ public class RailMovementController : MonoBehaviour
     
     void Start()
     {
+        // DISABLED - UnifiedFlightController is now the primary controller
+        Debug.LogWarning("RailMovementController: DISABLED - UnifiedFlightController is handling flight control");
+        this.enabled = false;
+        return;
+        
         // Initialize speed to a reasonable starting value
         currentSpeed = (data.minSpeed + data.maxSpeed) * 0.3f; // Start at 30% of speed range
         Debug.Log($"RailMovementController initialized with speed: {currentSpeed}");
