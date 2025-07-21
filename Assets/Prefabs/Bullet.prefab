@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6421684129442065395}
   - component: {fileID: 497733096043569000}
   - component: {fileID: 1234567890123456789}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
   damage: 25
   hitLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 951
   hitEffectPrefab: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
 --- !u!54 &1234567890123456789
 Rigidbody:

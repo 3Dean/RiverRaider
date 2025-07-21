@@ -99,6 +99,27 @@ public class Bullet : MonoBehaviour
         isActive = true;
     }
 
+    /// <summary>
+    /// Initialize bullet with platform velocity inheritance (realistic physics)
+    /// </summary>
+    public void InitializeWithPlatformVelocity(Vector3 direction, Vector3 platformVelocity, float bulletSpeed = -1f)
+    {
+        if (bulletSpeed > 0f) speed = bulletSpeed;
+        
+        // Calculate muzzle velocity in world space
+        Vector3 muzzleVelocity = direction.normalized * speed;
+        
+        // Add platform velocity to muzzle velocity for realistic physics
+        velocity = platformVelocity + muzzleVelocity;
+        isActive = true;
+        
+        // Debug logging for velocity inheritance
+        if (Time.frameCount % 60 == 0) // Log occasionally to avoid spam
+        {
+            Debug.Log($"Bullet Velocity Inheritance: Platform={platformVelocity.magnitude:F1} + Muzzle={speed:F1} = Total={velocity.magnitude:F1}");
+        }
+    }
+
     private void ResetBullet()
     {
         lifeTimer = 0f;

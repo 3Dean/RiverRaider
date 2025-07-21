@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       propertyPath: m_LocalPosition.x
@@ -65,6 +65,10 @@ PrefabInstance:
       value: fuelbarge1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       propertyPath: m_TagString
       value: FuelBarge
       objectReference: {fileID: 0}
@@ -75,6 +79,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8386703099503818159}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 437927820788032419}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1974700023947847414}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4543704584001564540}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ad7f48152279646869b1f226eab355, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 596013817219792571}
   m_SourcePrefab: {fileID: 100100000, guid: a3ad7f48152279646869b1f226eab355, type: 3}
 --- !u!1 &6343572489527235895 stripped
 GameObject:
@@ -94,11 +110,88 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
+    m_Bits: 128
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.04, y: 3.25, z: 3.43}
+  m_Center: {x: 0, y: 2.06, z: -0.00000011920929}
+--- !u!65 &437927820788032419
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343572489527235895}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.6639029, y: 0.64, z: 3.0752892}
-  m_Center: {x: 0, y: 0.55, z: -0.00000011920929}
+  m_Size: {x: 1.6639029, y: 0.77, z: 3.0752892}
+  m_Center: {x: 0, y: -0.29, z: -0.00000011920929}
+--- !u!65 &1974700023947847414
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343572489527235895}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.54, y: 0.67, z: 2.96}
+  m_Center: {x: 0, y: -0.29, z: -0.00000011920929}
+--- !u!114 &4543704584001564540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343572489527235895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83bb7de0e129f940ba68f6f196c999b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crashDamage: 35
+  enableBulletDamage: 1
+  crashEffect: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
+  bulletHitEffect: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
+  crashSound: {fileID: 8300000, guid: 5d68e963c8b08664aadd1596a500a6e3, type: 3}
+  bulletHitSound: {fileID: 8300000, guid: e1c32e74570debd41a92fa51bfc20b89, type: 3}
+--- !u!114 &596013817219792571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6343572489527235895}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184098b40a76bed4f8c566bfb93d6e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasTriggerCollider: 0
+  hasSolidCollider: 0
+  hasFuelBargeCollisionScript: 0
+  hasCorrectTag: 0
+  totalColliders: 0

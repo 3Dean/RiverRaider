@@ -36,6 +36,8 @@ public class HealthBarUI : MonoBehaviour
     
     private void InitializeComponents()
     {
+        Debug.Log("HealthBarUI: Starting initialization...");
+        
         // Find FlightData if not assigned
         if (flightData == null)
         {
@@ -45,6 +47,14 @@ public class HealthBarUI : MonoBehaviour
                 Debug.LogError("HealthBarUI: No FlightData found in scene!", this);
                 return;
             }
+            else
+            {
+                Debug.Log($"HealthBarUI: Found FlightData on '{flightData.name}'");
+            }
+        }
+        else
+        {
+            Debug.Log($"HealthBarUI: Using assigned FlightData: '{flightData.name}'");
         }
         
         // Find slider if not assigned
@@ -56,12 +66,34 @@ public class HealthBarUI : MonoBehaviour
                 Debug.LogError("HealthBarUI: No Slider component found!", this);
                 return;
             }
+            else
+            {
+                Debug.Log("HealthBarUI: Found Slider component");
+            }
+        }
+        else
+        {
+            Debug.Log("HealthBarUI: Using assigned Slider");
         }
         
         // Get fill image if not assigned
         if (fillImage == null && healthSlider != null)
         {
             fillImage = healthSlider.fillRect?.GetComponent<Image>();
+            if (fillImage != null)
+            {
+                Debug.Log("HealthBarUI: Found fill image");
+            }
+            else
+            {
+                Debug.LogWarning("HealthBarUI: No fill image found - colors won't change");
+            }
+        }
+        
+        // Log current health values
+        if (flightData != null)
+        {
+            Debug.Log($"HealthBarUI: Current health: {flightData.currentHealth}/{flightData.maxHealth} ({flightData.GetHealthPercentage():P0})");
         }
         
         isInitialized = true;
@@ -93,6 +125,9 @@ public class HealthBarUI : MonoBehaviour
         
         // Performance optimization: Only update if health changed significantly
         if (Mathf.Abs(currentHealth - lastDisplayedHealth) < 1f) return;
+        
+        // Debug logging for health changes
+        Debug.Log($"HealthBarUI: Updating display - Health: {currentHealth:F1}/{flightData.maxHealth} ({healthPercentage:P1}), Slider: {healthSlider.value:F2} → {healthPercentage:F2}");
         
         // Update slider value
         healthSlider.value = healthPercentage;

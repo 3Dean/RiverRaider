@@ -73,23 +73,23 @@ public class HUDTapeController : MonoBehaviour
     
     void Start()
     {
-        Debug.Log($"HUDTapeController ({tapeType}): Start() called");
-        Debug.Log($"HUDTapeController ({tapeType}): GameObject active: {gameObject.activeInHierarchy}, Component enabled: {enabled}");
+        //Debug.Log($"HUDTapeController ({tapeType}): Start() called");
+        //Debug.Log($"HUDTapeController ({tapeType}): GameObject active: {gameObject.activeInHierarchy}, Component enabled: {enabled}");
         InitializeComponents();
         CreateTickPool();
-        Debug.Log($"HUDTapeController ({tapeType}): Start() completed, isInitialized: {isInitialized}");
+        //Debug.Log($"HUDTapeController ({tapeType}): Start() completed, isInitialized: {isInitialized}");
         
         // Force an immediate update to test
         if (isInitialized)
         {
-            Debug.Log($"HUDTapeController ({tapeType}): Forcing immediate update test...");
+            //Debug.Log($"HUDTapeController ({tapeType}): Forcing immediate update test...");
             UpdateTapeDisplay();
         }
     }
     
     private void InitializeComponents()
     {
-        Debug.Log($"HUDTapeController ({tapeType}): InitializeComponents() called");
+        //Debug.Log($"HUDTapeController ({tapeType}): InitializeComponents() called");
         
         // Find FlightData if not assigned
         if (flightData == null)
@@ -180,7 +180,7 @@ public class HUDTapeController : MonoBehaviour
             // Initially hide all ticks
             tickGO.SetActive(false);
             
-            Debug.Log($"HUDTapeController ({tapeType}): Created tick {i}, Label component: {(tick.label != null ? "Found" : "Missing")}");
+            //Debug.Log($"HUDTapeController ({tapeType}): Created tick {i}, Label component: {(tick.label != null ? "Found" : "Missing")}");
         }
         
         Debug.Log($"HUDTapeController ({tapeType}): Tick pool created successfully with {tickPool.Count} ticks");
@@ -309,7 +309,7 @@ public class HUDTapeController : MonoBehaviour
     
     private void UpdateTickMarks()
     {
-        Debug.Log($"HUDTapeController ({tapeType}): UpdateTickMarks() called, currentValue: {currentValue:F1}");
+        //Debug.Log($"HUDTapeController ({tapeType}): UpdateTickMarks() called, currentValue: {currentValue:F1}");
         
         if (tickPool.Count == 0)
         {
@@ -333,7 +333,7 @@ public class HUDTapeController : MonoBehaviour
         float containerHeight = tickContainer.rect.height;
         float visibilityThreshold = containerHeight / 2f + tickSpacing;
         
-        Debug.Log($"HUDTapeController ({tapeType}): Container height: {containerHeight:F1}, Visibility threshold: {visibilityThreshold:F1}");
+        //Debug.Log($"HUDTapeController ({tapeType}): Container height: {containerHeight:F1}, Visibility threshold: {visibilityThreshold:F1}");
         
         for (int i = 0; i < tickPool.Count; i++)
         {
@@ -350,8 +350,8 @@ public class HUDTapeController : MonoBehaviour
             // Check if tick should be visible
             bool shouldBeVisible = Mathf.Abs(yPosition) <= visibilityThreshold;
             
-            // Debug ALL ticks to see what's happening
-            Debug.Log($"HUDTapeController ({tapeType}): Tick {i} - Value: {tick.value:F1}, YPos: {yPosition:F1}, ShouldBeVisible: {shouldBeVisible}, Threshold: {visibilityThreshold:F1}, BaseValue: {baseValue:F1}, TickOffset: {tickOffset}, CenterIndex: {centerIndex}");
+            // Debug individual ticks - DISABLED to reduce console spam
+            //Debug.Log($"HUDTapeController ({tapeType}): Tick {i} - Value: {tick.value:F1}, YPos: {yPosition:F1}, ShouldBeVisible: {shouldBeVisible}, Threshold: {visibilityThreshold:F1}, BaseValue: {baseValue:F1}, TickOffset: {tickOffset}, CenterIndex: {centerIndex}");
             
             if (shouldBeVisible)
             {
@@ -379,16 +379,16 @@ public class HUDTapeController : MonoBehaviour
                         // Always show major tick labels - UI mask will handle clipping
                         tick.label.text = tick.value.ToString(valueFormat);
                         tick.label.gameObject.SetActive(true);
-                        Debug.Log($"HUDTapeController ({tapeType}): Showing MAJOR tick label {i} with value {tick.value:F1} (UI mask will clip)");
+                        //Debug.Log($"HUDTapeController ({tapeType}): Showing MAJOR tick label {i} with value {tick.value:F1} (UI mask will clip)");
                     }
                     else
                     {
                         // Hide minor ticks and negative values (but not for masking reasons)
                         tick.label.gameObject.SetActive(false);
-                        if (!isMajorTick)
-                            Debug.Log($"HUDTapeController ({tapeType}): Hiding minor tick label {i} with value {tick.value:F1}");
-                        else if (tick.value < 0f)
-                            Debug.Log($"HUDTapeController ({tapeType}): Hiding negative value tick {i} with value {tick.value:F1}");
+                        //if (!isMajorTick)
+                        //    Debug.Log($"HUDTapeController ({tapeType}): Hiding minor tick label {i} with value {tick.value:F1}");
+                        //else if (tick.value < 0f)
+                        //    Debug.Log($"HUDTapeController ({tapeType}): Hiding negative value tick {i} with value {tick.value:F1}");
                     }
                 }
                 
@@ -411,8 +411,11 @@ public class HUDTapeController : MonoBehaviour
             }
         }
         
-        // Debug info - ALWAYS show
-        Debug.Log($"HUDTapeController ({tapeType}): Current: {currentValue:F1}, Base: {baseValue:F1}, Visible: {visibleCount}/{totalProcessed}, Container H: {containerHeight:F1}, Threshold: {visibilityThreshold:F1}, PixelOffset: {pixelOffset:F1}");
+        // Debug info - Only show occasionally to reduce spam
+        if (Time.frameCount % 300 == 0) // Every 5 seconds
+        {
+            Debug.Log($"HUDTapeController ({tapeType}): Current: {currentValue:F1}, Base: {baseValue:F1}, Visible: {visibleCount}/{totalProcessed}, Container H: {containerHeight:F1}, Threshold: {visibilityThreshold:F1}, PixelOffset: {pixelOffset:F1}");
+        }
         
         // Emergency debug - if no ticks are visible, force show center tick
         if (visibleCount == 0)

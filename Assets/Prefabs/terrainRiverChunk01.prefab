@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 2799578886419116078}
   - component: {fileID: 8079892347239212949}
   - component: {fileID: 1234567890123456780}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Chunk_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -578,6 +578,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2030750490006881776}
     m_Modifications:
+    - target: {fileID: 5999697666165329805, guid: a6517ebc8d4cc5647b719fb475406541, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5999697666165329805, guid: a6517ebc8d4cc5647b719fb475406541, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5999697666165329805, guid: a6517ebc8d4cc5647b719fb475406541, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5999697666165329805, guid: a6517ebc8d4cc5647b719fb475406541, type: 3}
       propertyPath: m_LocalPosition.y
       value: 10.2

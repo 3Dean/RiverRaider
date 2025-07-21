@@ -10,8 +10,7 @@ public class MissileController : MonoBehaviour
     [Header("Missile Settings")]
     [SerializeField] private MissileType currentMissileType = MissileType.Standard;
     [SerializeField] private Transform[] missileFirePoints;
-    [SerializeField] private int maxMissiles = 20;
-    [SerializeField] private int currentMissiles = 20;
+    [SerializeField] private FlightData flightData; // Reference to centralized data
     
     [Header("Missile Types")]
     [SerializeField] private MissileData[] missileTypes;
@@ -51,9 +50,19 @@ public class MissileController : MonoBehaviour
 
     void Start()
     {
-        // Initialize missile count
-        if (currentMissiles > maxMissiles)
-            currentMissiles = maxMissiles;
+        // Find FlightData if not assigned
+        if (flightData == null)
+        {
+            flightData = FindObjectOfType<FlightData>();
+            if (flightData == null)
+            {
+                Debug.LogError("MissileController: No FlightData found in scene!", this);
+            }
+            else
+            {
+                Debug.Log($"MissileController: Found FlightData on '{flightData.name}'");
+            }
+        }
     }
 
     public bool FireMissile()
@@ -69,8 +78,8 @@ public class MissileController : MonoBehaviour
             return false;
         }
 
-        // Check ammunition
-        if (currentMissiles < missileData.cost)
+        // Check ammunition using FlightData
+        if (flightData == null || !flightData.HasMissiles() || flightData.currentMissiles < missileData.cost)
         {
             PlayEmptySound();
             return false;
@@ -87,8 +96,8 @@ public class MissileController : MonoBehaviour
         // Fire the missile
         LaunchMissile(missileData, firePoint);
 
-        // Update state
-        currentMissiles -= missileData.cost;
+        // Update state using FlightData
+        flightData.ConsumeMissile(missileData.cost);
         lastFireTime = Time.time;
         
         // Alternate fire points
@@ -190,32 +199,40 @@ public class MissileController : MonoBehaviour
     public void SwitchMissileType(MissileType newType)
     {
         currentMissileType = newType;
+        if (flightData != null)
+        {
+            flightData.SetMissileType(newType.ToString());
+        }
     }
 
     public void AddMissiles(int amount)
     {
-        currentMissiles = Mathf.Min(currentMissiles + amount, maxMissiles);
+        if (flightData != null)
+        {
+            flightData.AddMissiles(amount);
+        }
     }
 
     public void SetMaxMissiles(int newMax)
     {
-        maxMissiles = newMax;
-        if (currentMissiles > maxMissiles)
-            currentMissiles = maxMissiles;
+        if (flightData != null)
+        {
+            flightData.maxMissiles = newMax;
+            if (flightData.currentMissiles > newMax)
+                flightData.currentMissiles = newMax;
+        }
     }
 
-    // Properties
-    public int CurrentMissiles => currentMissiles;
-    public int MaxMissiles => maxMissiles;
+    // Properties using FlightData
+    public int CurrentMissiles => flightData != null ? flightData.currentMissiles : 0;
+    public int MaxMissiles => flightData != null ? flightData.maxMissiles : 0;
     public MissileType CurrentMissileType => currentMissileType;
-    public bool HasMissiles => currentMissiles > 0;
-    public float MissilePercentage => maxMissiles > 0 ? (float)currentMissiles / maxMissiles : 0f;
+    public bool HasMissiles => flightData != null && flightData.HasMissiles();
+    public float MissilePercentage => flightData != null ? flightData.GetMissilePercentage() : 0f;
 
     void OnValidate()
     {
-        if (maxMissiles < 0) maxMissiles = 0;
-        if (currentMissiles < 0) currentMissiles = 0;
-        if (currentMissiles > maxMissiles) currentMissiles = maxMissiles;
+        // Validation is now handled by FlightData
     }
 
     void OnDrawGizmosSelected()

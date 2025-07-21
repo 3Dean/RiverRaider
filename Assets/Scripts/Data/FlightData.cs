@@ -23,6 +23,12 @@ public class FlightData : MonoBehaviour
     public float baseFuelConsumption = 1f; // Fuel per second at minimum speed
     public float speedFuelMultiplier = 0.02f; // Additional fuel consumption per MPH
 
+    [Header("Missile System")]
+    public int maxMissiles = 5; // ARM-30 capacity
+    [HideInInspector] public int currentMissiles;
+    public string currentMissileType = "ARM-30"; // Default missile type
+    public int missileResupplyAmount = 5; // Full reload amount
+
     [Header("Drag & Throttle Inertia")]
     [Tooltip("Linear drag coefficient (~0.01 – 0.1)")]
     public float dragCoefficient = 0.02f;
@@ -86,6 +92,9 @@ public class FlightData : MonoBehaviour
         currentHealth = maxHealth;
         currentFuel = maxFuel; // Start with full fuel
         
+        // Initialize missile system
+        currentMissiles = maxMissiles; // Start with full missile load
+        
         // CRITICAL FIX: Initialize airspeed to a reasonable starting value
         if (airspeed == 0f)
         {
@@ -97,7 +106,7 @@ public class FlightData : MonoBehaviour
         enginePowerMultiplier = 1f;
         isEngineRunning = true;
         
-        Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Engine=ON, Airspeed={airspeed:F1}");
+        Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Missiles={currentMissiles}/{maxMissiles}, Engine=ON, Airspeed={airspeed:F1}");
     }
     
     void Update()
@@ -244,5 +253,59 @@ public class FlightData : MonoBehaviour
             isEngineRunning = true;
             Debug.Log("ENGINE RESTARTED - Fuel restored!");
         }
+    }
+    
+    // Missile system methods
+    public bool ConsumeMissile(int amount = 1)
+    {
+        if (currentMissiles >= amount)
+        {
+            currentMissiles -= amount;
+            Debug.Log($"Missile fired! Remaining: {currentMissiles}/{maxMissiles}");
+            return true;
+        }
+        Debug.Log("No missiles remaining!");
+        return false;
+    }
+    
+    public void ResupplyMissiles()
+    {
+        currentMissiles = maxMissiles;
+        Debug.Log($"Missiles resupplied to maximum! {currentMissiles}/{maxMissiles}");
+    }
+    
+    public void AddMissiles(int amount)
+    {
+        currentMissiles = Mathf.Clamp(currentMissiles + amount, 0, maxMissiles);
+        Debug.Log($"Added {amount} missiles. Current: {currentMissiles}/{maxMissiles}");
+    }
+    
+    public bool HasMissiles()
+    {
+        return currentMissiles > 0;
+    }
+    
+    public float GetMissilePercentage()
+    {
+        return maxMissiles > 0 ? (float)currentMissiles / maxMissiles : 0f;
+    }
+    
+    public void SetMissileType(string newType)
+    {
+        currentMissileType = newType;
+        Debug.Log($"Missile type changed to: {currentMissileType}");
+    }
+    
+    // Test methods for debugging
+    [ContextMenu("Test Fire Missile")]
+    private void TestFireMissile()
+    {
+        ConsumeMissile();
+    }
+    
+    [ContextMenu("Test Resupply Missiles")]
+    private void TestResupplyMissiles()
+    {
+        ResupplyMissiles();
     }
 }

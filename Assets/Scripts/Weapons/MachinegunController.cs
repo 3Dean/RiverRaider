@@ -12,6 +12,10 @@ public class MachinegunController : MonoBehaviour
     [SerializeField] private float machinegunSpeed = 80f;
     [SerializeField] private Transform[] machinegunFirePoints;
     
+    [Header("Velocity Inheritance")]
+    [SerializeField] private bool enableVelocityInheritance = true;
+    [SerializeField] private float velocityInheritanceMultiplier = 1.0f; // Adjust for gameplay balance
+    
     [Header("Audio")]
     [SerializeField] private AudioSource machinegunAudioSource;
     [SerializeField] private AudioClip machinegunFireSound;
@@ -155,12 +159,32 @@ public class MachinegunController : MonoBehaviour
 
     private void FireBullet(Transform firePoint)
     {
-        GameObject bullet = BulletPool.Instance.GetBullet(
-            firePoint.position,
-            firePoint.rotation,
-            firePoint.forward,
-            machinegunSpeed
-        );
+        GameObject bullet;
+        
+        if (enableVelocityInheritance)
+        {
+            // Get aircraft velocity for realistic physics
+            Vector3 aircraftVelocity = GetAircraftVelocity();
+            
+            // Use velocity inheritance bullet spawning
+            bullet = BulletPool.Instance.GetBulletWithPlatformVelocity(
+                firePoint.position,
+                firePoint.rotation,
+                firePoint.forward,
+                aircraftVelocity,
+                machinegunSpeed
+            );
+        }
+        else
+        {
+            // Use traditional bullet spawning (no velocity inheritance)
+            bullet = BulletPool.Instance.GetBullet(
+                firePoint.position,
+                firePoint.rotation,
+                firePoint.forward,
+                machinegunSpeed
+            );
+        }
 
         if (bullet != null)
         {
@@ -170,6 +194,41 @@ public class MachinegunController : MonoBehaviour
                 bulletComponent.Damage = machinegunDamage;
             }
         }
+    }
+
+    private Vector3 GetAircraftVelocity()
+    {
+        // Try to get velocity from UnifiedFlightController
+        var flightController = GetComponentInParent<UnifiedFlightController>();
+        if (flightController != null)
+        {
+            var flightData = flightController.GetComponent<FlightData>();
+            if (flightData != null)
+            {
+                // Convert airspeed (MPH) to Unity units per second
+                // Assuming 1 Unity unit = 1 meter, and using realistic conversion
+                float speedInUnitsPerSecond = flightData.airspeed * 0.44704f; // MPH to m/s conversion
+                
+                // Apply velocity inheritance multiplier for gameplay balance
+                speedInUnitsPerSecond *= velocityInheritanceMultiplier;
+                
+                // Get aircraft's forward direction and calculate velocity vector
+                Vector3 aircraftVelocity = transform.forward * speedInUnitsPerSecond;
+                
+                return aircraftVelocity;
+            }
+        }
+        
+        // Fallback: try to get velocity from rigidbody
+        var rb = GetComponentInParent<Rigidbody>();
+        if (rb != null)
+        {
+            return rb.velocity * velocityInheritanceMultiplier;
+        }
+        
+        // Final fallback: no velocity inheritance
+        Debug.LogWarning("MachinegunController: Could not find aircraft velocity source. Velocity inheritance disabled for this shot.");
+        return Vector3.zero;
     }
 
     private void PlayMachinegunEffects(Transform firePoint)

@@ -130,6 +130,28 @@ public class BulletPool : MonoBehaviour
     }
 
     /// <summary>
+    /// Get a bullet and initialize it with platform velocity inheritance (realistic physics)
+    /// </summary>
+    public GameObject GetBulletWithPlatformVelocity(Vector3 position, Quaternion rotation, Vector3 direction, Vector3 platformVelocity, float speed = -1f)
+    {
+        GameObject bullet = GetBullet();
+        if (bullet != null)
+        {
+            bullet.transform.position = position;
+            bullet.transform.rotation = rotation;
+            bullet.SetActive(true);
+            
+            // Initialize bullet with platform velocity inheritance
+            var bulletComponent = bullet.GetComponent<Bullet>();
+            if (bulletComponent != null)
+            {
+                bulletComponent.InitializeWithPlatformVelocity(direction, platformVelocity, speed);
+            }
+        }
+        return bullet;
+    }
+
+    /// <summary>
     /// Return a bullet to the pool (called automatically when bullet is deactivated)
     /// </summary>
     public void ReturnBullet(GameObject bullet)

@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Player health system that integrates with FlightData.
-/// Handles damage, healing, and death logic while using centralized health data.
+/// Handles damage, healing, death logic, and UI updates using centralized health data.
+/// Follows the same pattern as PlayerShipFuel for consistency.
 /// </summary>
 [DisallowMultipleComponent]
 public class PlayerShipHealth : MonoBehaviour
@@ -10,12 +12,34 @@ public class PlayerShipHealth : MonoBehaviour
     [Header("Flight Data Reference")]
     [SerializeField] private FlightData flightData;
     
+    [Header("UI References")]
+    [SerializeField] private Slider healthSlider;
+    
     [Header("Death Settings")]
     [SerializeField] private bool disableOnDeath = true;
     [SerializeField] private GameObject deathEffect; // Optional explosion effect
     
-    // Cached references
+    [Header("Visual Settings")]
+    [SerializeField] private Color healthyColor = Color.green;
+    [SerializeField] private Color damagedColor = Color.yellow;
+    [SerializeField] private Color criticalColor = Color.red;
+    [SerializeField] private float criticalThreshold = 0.25f; // 25% health
+    [SerializeField] private float damagedThreshold = 0.6f;   // 60% health
+    
+    // Cached references and state
     private bool isInitialized = false;
+    private Image healthFillImage;
+    
+    // Health states for visual feedback
+    public enum HealthState
+    {
+        Healthy,
+        Damaged,
+        Critical,
+        Dead
+    }
+    
+    private HealthState currentHealthState = HealthState.Healthy;
     
     void Start()
     {
@@ -35,13 +59,38 @@ public class PlayerShipHealth : MonoBehaviour
             }
         }
         
+        // Find health slider if not assigned
+        if (healthSlider == null)
+        {
+            healthSlider = GetComponent<Slider>();
+            if (healthSlider == null)
+            {
+                Debug.LogError("PlayerShipHealth: No Slider component found!", this);
+                return;
+            }
+        }
+        
+        // Get fill image for color changes
+        if (healthSlider != null && healthSlider.fillRect != null)
+        {
+            healthFillImage = healthSlider.fillRect.GetComponent<Image>();
+        }
+        
         isInitialized = true;
-        Debug.Log("PlayerShipHealth: Initialized and connected to FlightData");
+        
+        // Initial UI update
+        UpdateHealthUI();
+        
+        Debug.Log("PlayerShipHealth: Initialized with UI integration following PlayerShipFuel pattern");
     }
     
     void Update()
     {
         if (!isInitialized) return;
+        
+        // Update health state and UI
+        UpdateHealthState();
+        UpdateHealthUI();
         
         // Check for death condition
         if (!flightData.IsAlive())
@@ -107,6 +156,60 @@ public class PlayerShipHealth : MonoBehaviour
         // - Respawn logic
         // - Score penalties
         // - etc.
+    }
+    
+    private void UpdateHealthState()
+    {
+        float healthPercentage = flightData.GetHealthPercentage();
+        
+        if (healthPercentage <= 0f)
+        {
+            currentHealthState = HealthState.Dead;
+        }
+        else if (healthPercentage <= criticalThreshold)
+        {
+            currentHealthState = HealthState.Critical;
+        }
+        else if (healthPercentage <= damagedThreshold)
+        {
+            currentHealthState = HealthState.Damaged;
+        }
+        else
+        {
+            currentHealthState = HealthState.Healthy;
+        }
+    }
+    
+    void UpdateHealthUI()
+    {
+        if (healthSlider != null && isInitialized)
+        {
+            healthSlider.value = flightData.GetHealthPercentage();
+            
+            // Update color based on health state
+            if (healthFillImage != null)
+            {
+                Color targetColor = healthyColor;
+                
+                switch (currentHealthState)
+                {
+                    case HealthState.Critical:
+                        targetColor = criticalColor;
+                        break;
+                    case HealthState.Damaged:
+                        targetColor = damagedColor;
+                        break;
+                    case HealthState.Healthy:
+                        targetColor = healthyColor;
+                        break;
+                    case HealthState.Dead:
+                        targetColor = criticalColor;
+                        break;
+                }
+                
+                healthFillImage.color = targetColor;
+            }
+        }
     }
     
     // Public methods for external systems

@@ -51,5 +51,10 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "RiverRaider.sln"
+    "dotnet.defaultSolution": "RiverRaider.sln",
+    "markdownlint.config": {
+        "default": false
+    },
+    "markdown.validate.enabled": false,
+    "problems.decorations.enabled": true
 }

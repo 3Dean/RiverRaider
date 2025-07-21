@@ -210,16 +210,16 @@ public class UnifiedFlightController : MonoBehaviour
         }
         
         // AGGRESSIVE DEBUG - Always log mouse input to see what's happening
-        if (enableDebugLogging && Time.frameCount % 10 == 0) // Every 10 frames
-        {
-            Debug.Log($"RAW Mouse: X={rawMouseX:F4}, Y={rawMouseY:F4} | SCALED: X={currentMouseX:F2}, Y={currentMouseY:F2}");
-        }
+        //if (enableDebugLogging && Time.frameCount % 10 == 0) // Every 10 frames
+        //{
+        //    Debug.Log($"RAW Mouse: X={rawMouseX:F4}, Y={rawMouseY:F4} | SCALED: X={currentMouseX:F2}, Y={currentMouseY:F2}");
+        //}
         
         // Also log when we detect ANY mouse movement
-        if (enableDebugLogging && (Mathf.Abs(rawMouseX) > 0.0001f || Mathf.Abs(rawMouseY) > 0.0001f))
-        {
-            Debug.Log($"MOUSE DETECTED! Raw: X={rawMouseX:F4}, Y={rawMouseY:F4} | Scaled: X={currentMouseX:F2}, Y={currentMouseY:F2}");
-        }
+        //if (enableDebugLogging && (Mathf.Abs(rawMouseX) > 0.0001f || Mathf.Abs(rawMouseY) > 0.0001f))
+        //{
+        //    Debug.Log($"MOUSE DETECTED! Raw: X={rawMouseX:F4}, Y={rawMouseY:F4} | Scaled: X={currentMouseX:F2}, Y={currentMouseY:F2}");
+        //}
     }
     
     private void ProcessDiscreteThrottleInput()
@@ -731,6 +731,22 @@ public class UnifiedFlightController : MonoBehaviour
             currentMouseX = 0f;
             currentMouseY = 0f;
         }
+    }
+    
+    /// <summary>
+    /// Get current throttle position as percentage (0.0 to 1.0)
+    /// </summary>
+    public float GetThrottlePosition()
+    {
+        return throttlePosition;
+    }
+    
+    /// <summary>
+    /// Get current throttle position as percentage (0 to 100)
+    /// </summary>
+    public float GetThrottlePercentage()
+    {
+        return throttlePosition * 100f;
     }
     
     #endregion
