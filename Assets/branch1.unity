@@ -5121,7 +5121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   machinegunController: {fileID: 2016356727}
-  missileController: {fileID: 0}
+  missileController: {fileID: 2016356732}
   enableMouseInput: 1
   enableKeyboardInput: 1
 --- !u!114 &2016356727
@@ -5242,7 +5242,7 @@ MonoBehaviour:
     name: ARM-30
     missilePrefab: {fileID: 1202840156040834672, guid: 554088e0ddb87ec4d9d6445fb73204e4, type: 3}
     damage: 100
-    speed: 300
+    speed: 120
     cooldown: 2
     cost: 0
   missileAudioSource: {fileID: 0}

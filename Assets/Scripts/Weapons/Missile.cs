@@ -17,6 +17,9 @@ public class Missile : MonoBehaviour
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private AudioClip explosionSound;
     
+    [Header("Trail System")]
+    [SerializeField] private MonoBehaviour trailSystem; // Generic trail system reference
+    
     private Vector3 direction;
     private float timeAlive = 0f;
     private bool hasExploded = false;
@@ -35,6 +38,22 @@ public class Missile : MonoBehaviour
         if (rb != null && direction != Vector3.zero)
         {
             rb.velocity = direction * speed;
+        }
+        
+        // Initialize trail system - try to find any trail system
+        if (trailSystem == null)
+        {
+            // Try to find trail systems by name
+            MonoBehaviour[] components = GetComponentsInChildren<MonoBehaviour>();
+            foreach (var component in components)
+            {
+                string typeName = component.GetType().Name;
+                if (typeName == "HybridMissileTrail" || typeName == "RealisticMissileTrail")
+                {
+                    trailSystem = component;
+                    break;
+                }
+            }
         }
     }
 
@@ -65,6 +84,33 @@ public class Missile : MonoBehaviour
         {
             rb.velocity = direction * speed;
         }
+    }
+
+    /// <summary>
+    /// Initialize missile with velocity inheritance from launching platform
+    /// </summary>
+    public void Initialize(float missileSpeed, float missileDamage, Vector3 moveDirection, Vector3 inheritedVelocity)
+    {
+        speed = missileSpeed;
+        damage = missileDamage;
+        direction = moveDirection.normalized;
+        
+        // Calculate final velocity: missile's own speed + inherited velocity
+        Vector3 missileVelocity = direction * speed;
+        Vector3 finalVelocity = missileVelocity + inheritedVelocity;
+        
+        // Set velocity immediately if rigidbody exists
+        if (rb != null)
+        {
+            rb.velocity = finalVelocity;
+            Debug.Log($"Missile initialized with velocity inheritance: " +
+                     $"Own={missileVelocity.magnitude:F1}, Inherited={inheritedVelocity.magnitude:F1}, " +
+                     $"Final={finalVelocity.magnitude:F1}");
+        }
+        
+        // Update speed for non-rigidbody movement
+        speed = finalVelocity.magnitude;
+        direction = finalVelocity.normalized;
     }
 
     void OnTriggerEnter(Collider other)
@@ -129,6 +175,16 @@ public class Missile : MonoBehaviour
     {
         if (hasExploded) return;
         hasExploded = true;
+
+        // Stop trail system using reflection to call StopTrail method
+        if (trailSystem != null)
+        {
+            var stopTrailMethod = trailSystem.GetType().GetMethod("StopTrail");
+            if (stopTrailMethod != null)
+            {
+                stopTrailMethod.Invoke(trailSystem, null);
+            }
+        }
 
         // Area damage
         if (explosionRadius > 0f)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Missile controller for single-shot projectile weapons
-/// Handles different missile types and ammunition management
+/// Handles different missile types and ammunition management with velocity inheritance
 /// </summary>
 public class MissileController : MonoBehaviour
 {
@@ -23,6 +23,10 @@ public class MissileController : MonoBehaviour
     [Header("Effects")]
     [SerializeField] private GameObject missileLaunchEffect;
     [SerializeField] private float launchEffectDuration = 1f;
+
+    [Header("Velocity Inheritance")]
+    [SerializeField] private float velocityInheritanceMultiplier = 1f; // How much player velocity to inherit (0-1)
+    [SerializeField] private bool enableVelocityInheritance = true;
 
     private int currentFirePointIndex = 0;
     private float lastFireTime = 0f;
@@ -151,11 +155,15 @@ public class MissileController : MonoBehaviour
         // Instantiate missile
         GameObject missile = Instantiate(missileData.missilePrefab, firePoint.position, firePoint.rotation);
         
+        // Calculate player's velocity for inheritance
+        Vector3 playerVelocity = enableVelocityInheritance ? CalculatePlayerVelocity() : Vector3.zero;
+        
         // Configure missile (assuming it has a Missile component)
         var missileComponent = missile.GetComponent<Missile>();
         if (missileComponent != null)
         {
-            missileComponent.Initialize(missileData.speed, missileData.damage, firePoint.forward);
+            // Use the new velocity inheritance initialization
+            missileComponent.Initialize(missileData.speed, missileData.damage, firePoint.forward, playerVelocity);
         }
         else
         {
@@ -163,12 +171,42 @@ public class MissileController : MonoBehaviour
             var rb = missile.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.velocity = firePoint.forward * missileData.speed;
+                Vector3 missileVelocity = firePoint.forward * missileData.speed;
+                Vector3 finalVelocity = missileVelocity + playerVelocity;
+                rb.velocity = finalVelocity;
+                
+                Debug.Log($"Missile fallback velocity: Own={missileVelocity.magnitude:F1}, " +
+                         $"Inherited={playerVelocity.magnitude:F1}, Final={finalVelocity.magnitude:F1}");
             }
         }
 
         // Play effects
         PlayLaunchEffects(firePoint);
+    }
+
+    /// <summary>
+    /// Calculate the player's current velocity for missile inheritance
+    /// </summary>
+    private Vector3 CalculatePlayerVelocity()
+    {
+        if (flightData == null)
+        {
+            Debug.LogWarning("MissileController: No FlightData available for velocity calculation!");
+            return Vector3.zero;
+        }
+
+        // Get the player's current speed and direction
+        float playerSpeed = flightData.airspeed;
+        Vector3 playerDirection = transform.forward; // Aircraft's forward direction
+        
+        // Convert speed from MPH to Unity units per second
+        // The airspeed is already in Unity units per second based on the flight controller
+        Vector3 playerVelocity = playerDirection * playerSpeed * velocityInheritanceMultiplier;
+        
+        Debug.Log($"Player velocity calculated: Speed={playerSpeed:F1}, Direction={playerDirection}, " +
+                 $"Inheritance={velocityInheritanceMultiplier:F1}, Final={playerVelocity.magnitude:F1}");
+        
+        return playerVelocity;
     }
 
     private void PlayLaunchEffects(Transform firePoint)
@@ -223,16 +261,32 @@ public class MissileController : MonoBehaviour
         }
     }
 
+    // Velocity inheritance controls
+    public void SetVelocityInheritance(bool enabled)
+    {
+        enableVelocityInheritance = enabled;
+        Debug.Log($"Missile velocity inheritance {(enabled ? "enabled" : "disabled")}");
+    }
+
+    public void SetVelocityInheritanceMultiplier(float multiplier)
+    {
+        velocityInheritanceMultiplier = Mathf.Clamp01(multiplier);
+        Debug.Log($"Missile velocity inheritance multiplier set to {velocityInheritanceMultiplier:F1}");
+    }
+
     // Properties using FlightData
     public int CurrentMissiles => flightData != null ? flightData.currentMissiles : 0;
     public int MaxMissiles => flightData != null ? flightData.maxMissiles : 0;
     public MissileType CurrentMissileType => currentMissileType;
     public bool HasMissiles => flightData != null && flightData.HasMissiles();
     public float MissilePercentage => flightData != null ? flightData.GetMissilePercentage() : 0f;
+    public bool VelocityInheritanceEnabled => enableVelocityInheritance;
+    public float VelocityInheritanceMultiplier => velocityInheritanceMultiplier;
 
     void OnValidate()
     {
-        // Validation is now handled by FlightData
+        // Clamp velocity inheritance multiplier
+        velocityInheritanceMultiplier = Mathf.Clamp01(velocityInheritanceMultiplier);
     }
 
     void OnDrawGizmosSelected()
@@ -247,6 +301,14 @@ public class MissileController : MonoBehaviour
                 {
                     Gizmos.DrawWireCube(firePoint.position, Vector3.one * 0.3f);
                     Gizmos.DrawRay(firePoint.position, firePoint.forward * 5f);
+                    
+                    // Draw velocity inheritance visualization
+                    if (enableVelocityInheritance && Application.isPlaying && flightData != null)
+                    {
+                        Vector3 playerVel = CalculatePlayerVelocity();
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawRay(firePoint.position, playerVel.normalized * 3f);
+                    }
                 }
             }
         }
