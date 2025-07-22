@@ -1150,7 +1150,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 0.99780273
-          value: 0.8410255
+          value: 0.64615357
           inSlope: 1
           outSlope: 1
           tangentMode: 0
@@ -3275,7 +3275,7 @@ ParticleSystem:
     rotationAmount:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -9937,7 +9937,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.8930817, g: 0.8930817, b: 0.8930817, a: 0.7254902}
+      key0: {r: 1, g: 0.9951028, b: 0.9276729, a: 0.7254902}
       key1: {r: 0.509434, g: 0.509434, b: 0.509434, a: 0.36078432}
       key2: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -9954,7 +9954,7 @@ TrailRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 31226
+      atime1: 30840
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -19706,13 +19706,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useHybridSystem: 1
   trailLifetime: 3
-  trailWidth: 1
+  trailWidth: 2
   smokeParticles: {fileID: 1219331972921243816}
   createParticleSystem: 1
   meshTrail: {fileID: 3388290550503522124}
   createMeshTrail: 1
-  rearViewParticleScale: 2
-  rearViewEmissionRate: 25
+  rearViewParticleScale: 3
+  rearViewEmissionRate: 50
   sideViewEmissionRate: 30
   sizeOverLifetime:
     serializedVersion: 2
@@ -19889,7 +19889,7 @@ MonoBehaviour:
   explosionEffect: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
   explosionRadius: 5
   explosionSound: {fileID: 0}
-  trailSystem: {fileID: 0}
+  trailSystem: {fileID: 5795833002752257398}
 --- !u!4 &2016073399005344970 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: af63c2efa87dc974e8bec70b06029ecc, type: 3}

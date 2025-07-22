@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.VectorGraphics;
 using TMPro;
 
 /// <summary>
@@ -11,7 +12,7 @@ public class MissileUI : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI currentMissileText; // First TMP text for current count
     [SerializeField] private TextMeshProUGUI maxMissileText; // Second TMP text for max capacity
-    [SerializeField] private Image missileIcon; // Optional: missile type icon
+    [SerializeField] private SVGImage missileIcon; // Optional: missile type SVG icon
     
     [Header("Flight Data Reference")]
     [SerializeField] private FlightData flightData;
@@ -83,10 +84,10 @@ public class MissileUI : MonoBehaviour
         // Find icon if not assigned
         if (missileIcon == null)
         {
-            missileIcon = GetComponentInChildren<Image>();
+            missileIcon = GetComponentInChildren<SVGImage>();
             if (missileIcon != null)
             {
-                Debug.Log("MissileUI: Found missile icon");
+                Debug.Log("MissileUI: Found missile SVG icon");
             }
         }
         
@@ -132,13 +133,40 @@ public class MissileUI : MonoBehaviour
         
         // Update text displays
         currentMissileText.text = currentMissiles.ToString();
-        maxMissileText.text = maxMissiles.ToString();
+        maxMissileText.text = "/ " + maxMissiles.ToString();
         
-        // Update colors based on missile count
+        // Update colors based on missile count and missile type
         UpdateMissileColor(currentMissiles);
+        UpdateMissileTypeDisplay(missileType);
         
         lastDisplayedMissiles = currentMissiles;
         lastDisplayedType = missileType;
+    }
+    
+    private void UpdateMissileTypeDisplay(string missileType)
+    {
+        // Get current missile type data for enhanced display
+        var missileTypeData = flightData.GetCurrentMissileTypeData();
+        if (missileTypeData != null)
+        {
+            // Update icon color based on missile type
+            if (missileIcon != null)
+            {
+                missileIcon.color = missileTypeData.uiColor;
+                
+                // Update SVG icon if available
+                if (missileTypeData.missileSVGIcon != null)
+                {
+                    // Copy the SVG data from the missile type data to the UI icon
+                    missileIcon.sprite = missileTypeData.missileSVGIcon.sprite;
+                }
+                else if (missileTypeData.missileIcon != null)
+                {
+                    // Fallback to regular sprite if no SVG available
+                    missileIcon.sprite = missileTypeData.missileIcon;
+                }
+            }
+        }
     }
     
     private void UpdateMissileColor(int currentMissiles)

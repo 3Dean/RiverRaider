@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb1ba17b0866bc408e9c1bbc4731c2d, type: 3}
+  m_Name: MTD-ARM30
+  m_EditorClassIdentifier: 
+  missileTypeName: ARM-30
+  displayName: ARM-30
+  maxCapacity: 5
+  costPerShot: 1
+  damage: 100
+  speed: 40
+  cooldown: 1
+  explosionRadius: 5
+  missilePrefab: {fileID: 1202840156040834672, guid: 554088e0ddb87ec4d9d6445fb73204e4, type: 3}
+  missileIcon: {fileID: 3286163911610860551, guid: 44a13ebb3bc82834b89524b52c285e86, type: 3}
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  launchSound: {fileID: 0}
+  description: Standard anti-radar missile with balanced performance.

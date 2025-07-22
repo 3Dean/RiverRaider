@@ -2,18 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Missile controller for single-shot projectile weapons
-/// Handles different missile types and ammunition management with velocity inheritance
+/// Simplified missile controller that works directly with FlightData
+/// Handles missile firing with velocity inheritance - no more complex type management
 /// </summary>
 public class MissileController : MonoBehaviour
 {
     [Header("Missile Settings")]
-    [SerializeField] private MissileType currentMissileType = MissileType.Standard;
     [SerializeField] private Transform[] missileFirePoints;
-    [SerializeField] private FlightData flightData; // Reference to centralized data
-    
-    [Header("Missile Types")]
-    [SerializeField] private MissileData[] missileTypes;
+    [SerializeField] private FlightData flightData; // Single source of truth
     
     [Header("Audio")]
     [SerializeField] private AudioSource missileAudioSource;
@@ -31,26 +27,6 @@ public class MissileController : MonoBehaviour
     private int currentFirePointIndex = 0;
     private float lastFireTime = 0f;
 
-    public enum MissileType
-    {
-        Standard,
-        HeavyDamage,
-        FastSpeed,
-        Homing,
-        Cluster
-    }
-
-    [System.Serializable]
-    public class MissileData
-    {
-        public MissileType type;
-        public string name;
-        public GameObject missilePrefab;
-        public float damage = 100f;
-        public float speed = 40f;
-        public float cooldown = 1f;
-        public int cost = 1; // How many missiles this type consumes
-    }
 
     void Start()
     {
@@ -75,15 +51,15 @@ public class MissileController : MonoBehaviour
         if (!CanFire())
             return false;
 
-        MissileData missileData = GetCurrentMissileData();
-        if (missileData == null)
+        MissileTypeData missileTypeData = GetCurrentMissileTypeData();
+        if (missileTypeData == null)
         {
             Debug.LogWarning("MissileController: No missile data found for current type!", this);
             return false;
         }
 
         // Check ammunition using FlightData
-        if (flightData == null || !flightData.HasMissiles() || flightData.currentMissiles < missileData.cost)
+        if (flightData == null || !flightData.HasMissiles() || flightData.currentMissiles < missileTypeData.costPerShot)
         {
             PlayEmptySound();
             return false;
@@ -98,10 +74,10 @@ public class MissileController : MonoBehaviour
         }
 
         // Fire the missile
-        LaunchMissile(missileData, firePoint);
+        LaunchMissile(missileTypeData, firePoint);
 
         // Update state using FlightData
-        flightData.ConsumeMissile(missileData.cost);
+        flightData.ConsumeMissile(missileTypeData.costPerShot);
         lastFireTime = Time.time;
         
         // Alternate fire points
@@ -115,23 +91,16 @@ public class MissileController : MonoBehaviour
 
     private bool CanFire()
     {
-        MissileData missileData = GetCurrentMissileData();
-        if (missileData == null) return false;
+        MissileTypeData missileTypeData = GetCurrentMissileTypeData();
+        if (missileTypeData == null) return false;
         
-        return Time.time >= lastFireTime + missileData.cooldown;
+        return Time.time >= lastFireTime + missileTypeData.cooldown;
     }
 
-    private MissileData GetCurrentMissileData()
+    private MissileTypeData GetCurrentMissileTypeData()
     {
-        if (missileTypes == null || missileTypes.Length == 0) return null;
-        
-        foreach (var missile in missileTypes)
-        {
-            if (missile.type == currentMissileType)
-                return missile;
-        }
-        
-        return missileTypes[0]; // Fallback to first missile type
+        // Get missile type data directly from FlightData (single source of truth)
+        return flightData?.GetCurrentMissileTypeData();
     }
 
     private Transform GetCurrentFirePoint()
@@ -144,16 +113,16 @@ public class MissileController : MonoBehaviour
         return missileFirePoints[currentFirePointIndex];
     }
 
-    private void LaunchMissile(MissileData missileData, Transform firePoint)
+    private void LaunchMissile(MissileTypeData missileTypeData, Transform firePoint)
     {
-        if (missileData.missilePrefab == null)
+        if (missileTypeData.missilePrefab == null)
         {
-            Debug.LogWarning($"MissileController: No prefab assigned for missile type {missileData.type}!", this);
+            Debug.LogWarning($"MissileController: No prefab assigned for missile type {missileTypeData.missileTypeName}!", this);
             return;
         }
 
         // Instantiate missile
-        GameObject missile = Instantiate(missileData.missilePrefab, firePoint.position, firePoint.rotation);
+        GameObject missile = Instantiate(missileTypeData.missilePrefab, firePoint.position, firePoint.rotation);
         
         // Calculate player's velocity for inheritance
         Vector3 playerVelocity = enableVelocityInheritance ? CalculatePlayerVelocity() : Vector3.zero;
@@ -163,7 +132,7 @@ public class MissileController : MonoBehaviour
         if (missileComponent != null)
         {
             // Use the new velocity inheritance initialization
-            missileComponent.Initialize(missileData.speed, missileData.damage, firePoint.forward, playerVelocity);
+            missileComponent.Initialize(missileTypeData.speed, missileTypeData.damage, firePoint.forward, playerVelocity);
         }
         else
         {
@@ -171,7 +140,7 @@ public class MissileController : MonoBehaviour
             var rb = missile.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                Vector3 missileVelocity = firePoint.forward * missileData.speed;
+                Vector3 missileVelocity = firePoint.forward * missileTypeData.speed;
                 Vector3 finalVelocity = missileVelocity + playerVelocity;
                 rb.velocity = finalVelocity;
                 
@@ -180,8 +149,8 @@ public class MissileController : MonoBehaviour
             }
         }
 
-        // Play effects
-        PlayLaunchEffects(firePoint);
+        // Play effects (use missile type's launch sound if available)
+        PlayLaunchEffects(firePoint, missileTypeData);
     }
 
     /// <summary>
@@ -209,12 +178,16 @@ public class MissileController : MonoBehaviour
         return playerVelocity;
     }
 
-    private void PlayLaunchEffects(Transform firePoint)
+    private void PlayLaunchEffects(Transform firePoint, MissileTypeData missileTypeData = null)
     {
-        // Play launch sound
-        if (missileAudioSource != null && missileLaunchSound != null)
+        // Play launch sound - prefer missile type's sound, fallback to default
+        AudioClip soundToPlay = (missileTypeData != null && missileTypeData.launchSound != null) 
+            ? missileTypeData.launchSound 
+            : missileLaunchSound;
+            
+        if (missileAudioSource != null && soundToPlay != null)
         {
-            missileAudioSource.PlayOneShot(missileLaunchSound);
+            missileAudioSource.PlayOneShot(soundToPlay);
         }
 
         // Spawn launch effect
@@ -234,12 +207,28 @@ public class MissileController : MonoBehaviour
     }
 
     // Public methods for external control
-    public void SwitchMissileType(MissileType newType)
+    public void SwitchMissileType(string newTypeName)
     {
-        currentMissileType = newType;
         if (flightData != null)
         {
-            flightData.SetMissileType(newType.ToString());
+            flightData.SetMissileType(newTypeName);
+            Debug.Log($"Switched to missile type: {newTypeName}");
+        }
+    }
+    
+    public void SwitchToNextMissileType()
+    {
+        if (flightData != null)
+        {
+            flightData.SwitchToNextMissileType();
+        }
+    }
+    
+    public void SwitchToPreviousMissileType()
+    {
+        if (flightData != null)
+        {
+            flightData.SwitchToPreviousMissileType();
         }
     }
 
@@ -253,12 +242,9 @@ public class MissileController : MonoBehaviour
 
     public void SetMaxMissiles(int newMax)
     {
-        if (flightData != null)
-        {
-            flightData.maxMissiles = newMax;
-            if (flightData.currentMissiles > newMax)
-                flightData.currentMissiles = newMax;
-        }
+        // This method is now handled by the missile inventory system
+        // Individual missile types have their own capacities
+        Debug.Log($"SetMaxMissiles called with {newMax} - now handled by missile inventory system");
     }
 
     // Velocity inheritance controls
@@ -274,12 +260,13 @@ public class MissileController : MonoBehaviour
         Debug.Log($"Missile velocity inheritance multiplier set to {velocityInheritanceMultiplier:F1}");
     }
 
-    // Properties using FlightData
+    // Properties using FlightData as single source of truth
     public int CurrentMissiles => flightData != null ? flightData.currentMissiles : 0;
     public int MaxMissiles => flightData != null ? flightData.maxMissiles : 0;
-    public MissileType CurrentMissileType => currentMissileType;
+    public string CurrentMissileTypeName => flightData != null ? flightData.currentMissileType : "None";
+    public MissileTypeData CurrentMissileTypeData => GetCurrentMissileTypeData();
     public bool HasMissiles => flightData != null && flightData.HasMissiles();
-    public float MissilePercentage => flightData != null ? flightData.GetMissilePercentage() : 0f;
+    public float MissilePercentage => MaxMissiles > 0 ? (float)CurrentMissiles / MaxMissiles : 0f;
     public bool VelocityInheritanceEnabled => enableVelocityInheritance;
     public float VelocityInheritanceMultiplier => velocityInheritanceMultiplier;
 

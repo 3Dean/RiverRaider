@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class FlightData : MonoBehaviour
 {
@@ -24,9 +25,13 @@ public class FlightData : MonoBehaviour
     public float speedFuelMultiplier = 0.02f; // Additional fuel consumption per MPH
 
     [Header("Missile System")]
-    public int maxMissiles = 5; // ARM-30 capacity
-    [HideInInspector] public int currentMissiles;
-    public string currentMissileType = "ARM-30"; // Default missile type
+    [SerializeField] private MissileTypeData[] availableMissileTypes;
+    [SerializeField] private MissileInventory missileInventory = new MissileInventory();
+    
+    // Legacy properties for backward compatibility
+    public int maxMissiles => missileInventory.CurrentMaxCapacity;
+    public int currentMissiles => missileInventory.CurrentMissileCount;
+    public string currentMissileType => missileInventory.CurrentMissileTypeName;
     public int missileResupplyAmount = 5; // Full reload amount
 
     [Header("Drag & Throttle Inertia")]
@@ -93,7 +98,7 @@ public class FlightData : MonoBehaviour
         currentFuel = maxFuel; // Start with full fuel
         
         // Initialize missile system
-        currentMissiles = maxMissiles; // Start with full missile load
+        InitializeMissileSystem();
         
         // CRITICAL FIX: Initialize airspeed to a reasonable starting value
         if (airspeed == 0f)
@@ -107,6 +112,21 @@ public class FlightData : MonoBehaviour
         isEngineRunning = true;
         
         Debug.Log($"FlightData initialized: Health={currentHealth}, Fuel={currentFuel}, Missiles={currentMissiles}/{maxMissiles}, Engine=ON, Airspeed={airspeed:F1}");
+    }
+    
+    private void InitializeMissileSystem()
+    {
+        // Initialize missile inventory with available types
+        if (availableMissileTypes != null && availableMissileTypes.Length > 0)
+        {
+            missileInventory.Initialize(availableMissileTypes);
+        }
+        else
+        {
+            // Create default ARM-30 missile type if none are assigned
+            Debug.LogWarning("No missile types assigned to FlightData. Creating default ARM-30.");
+            // We'll handle this in the missile controller instead
+        }
     }
     
     void Update()
@@ -255,45 +275,61 @@ public class FlightData : MonoBehaviour
         }
     }
     
-    // Missile system methods
+    // Enhanced missile system methods using MissileInventory
     public bool ConsumeMissile(int amount = 1)
     {
-        if (currentMissiles >= amount)
-        {
-            currentMissiles -= amount;
-            Debug.Log($"Missile fired! Remaining: {currentMissiles}/{maxMissiles}");
-            return true;
-        }
-        Debug.Log("No missiles remaining!");
-        return false;
+        return missileInventory.FireMissile();
     }
     
     public void ResupplyMissiles()
     {
-        currentMissiles = maxMissiles;
-        Debug.Log($"Missiles resupplied to maximum! {currentMissiles}/{maxMissiles}");
+        missileInventory.ResupplyCurrentType();
     }
     
     public void AddMissiles(int amount)
     {
-        currentMissiles = Mathf.Clamp(currentMissiles + amount, 0, maxMissiles);
-        Debug.Log($"Added {amount} missiles. Current: {currentMissiles}/{maxMissiles}");
+        missileInventory.ResupplyCurrentType(amount);
     }
     
     public bool HasMissiles()
     {
-        return currentMissiles > 0;
+        return missileInventory.CurrentMissileCount > 0;
     }
     
     public float GetMissilePercentage()
     {
-        return maxMissiles > 0 ? (float)currentMissiles / maxMissiles : 0f;
+        return missileInventory.CurrentMissileStock?.GetPercentage() ?? 0f;
     }
     
     public void SetMissileType(string newType)
     {
-        currentMissileType = newType;
-        Debug.Log($"Missile type changed to: {currentMissileType}");
+        missileInventory.SwitchToMissileType(newType);
+    }
+    
+    // New missile system methods
+    public bool SwitchToNextMissileType()
+    {
+        return missileInventory.SwitchToNextMissileType();
+    }
+    
+    public bool SwitchToPreviousMissileType()
+    {
+        return missileInventory.SwitchToPreviousMissileType();
+    }
+    
+    public MissileTypeData GetCurrentMissileTypeData()
+    {
+        return missileInventory.CurrentMissileType;
+    }
+    
+    public MissileInventory GetMissileInventory()
+    {
+        return missileInventory;
+    }
+    
+    public void ResupplyAllMissiles()
+    {
+        missileInventory.ResupplyAll();
     }
     
     // Test methods for debugging
