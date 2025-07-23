@@ -19885,7 +19885,7 @@ MonoBehaviour:
   lifetime: 10
   targetLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 8960
   explosionEffect: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
   explosionRadius: 5
   explosionSound: {fileID: 0}

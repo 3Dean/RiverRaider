@@ -10,7 +10,7 @@ public class Missile : MonoBehaviour
     [SerializeField] private float damage = 100f;
     [SerializeField] private float speed = 40f;
     [SerializeField] private float lifetime = 10f;
-    [SerializeField] private LayerMask targetLayers = -1;
+    [SerializeField] private LayerMask targetLayers = (1 << 13) | (1 << 0); // Helicopter (13) + Default (0)
     
     [Header("Effects")]
     [SerializeField] private GameObject explosionEffect;

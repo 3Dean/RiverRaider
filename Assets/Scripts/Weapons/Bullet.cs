@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 50f;
     [SerializeField] private float maxLifetime = 3f;
     [SerializeField] private float damage = 25f;
-    [SerializeField] private LayerMask hitLayers = -1;
+    [SerializeField] private LayerMask hitLayers = (1 << 13) | (1 << 0); // Helicopter (13) + Default (0)
     
     [Header("Effects")]
     [SerializeField] private GameObject hitEffectPrefab;

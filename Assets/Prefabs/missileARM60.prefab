@@ -19789,7 +19789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: af63c2efa87dc974e8bec70b06029ecc, type: 3}
       propertyPath: m_Name
-      value: missileARM30
+      value: missileARM60
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: af63c2efa87dc974e8bec70b06029ecc, type: 3}
       propertyPath: m_Layer
@@ -19885,7 +19885,7 @@ MonoBehaviour:
   lifetime: 10
   targetLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 8960
   explosionEffect: {fileID: 67479066837872176, guid: 118e4ccacd8a7534aa44a00b62e1a675, type: 3}
   explosionRadius: 5
   explosionSound: {fileID: 0}

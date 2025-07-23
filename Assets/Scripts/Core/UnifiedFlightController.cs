@@ -46,6 +46,10 @@ public class UnifiedFlightController : MonoBehaviour
     [SerializeField] private float keyRepeatDelay = 0.5f; // Initial delay before repeat starts
     [SerializeField] private float keyRepeatRate = 0.2f; // Time between repeats (5 per second)
     
+    [Header("Initial Throttle Setting")]
+    [SerializeField] [Range(0f, 1f)] private float initialThrottlePercentage = 0.3f; // 30% throttle at start
+    [Tooltip("Starting throttle position (0.0 = 0%, 1.0 = 100%). Set to 0.3 for 30% throttle to maintain initial speed.")]
+    
     // Key repeat timing
     private float throttleUpTimer = 0f;
     private float throttleDownTimer = 0f;
@@ -163,6 +167,9 @@ public class UnifiedFlightController : MonoBehaviour
         // Set initial values
         flightData.airspeed = Mathf.Clamp(flightData.airspeed, flightData.minSpeed, flightData.maxSpeed);
         
+        // CRITICAL FIX: Set initial throttle position to prevent speed decay
+        throttlePosition = initialThrottlePercentage;
+        
         // Reset control state
         smoothYaw = 0f;
         smoothPitch = 0f;
@@ -172,7 +179,8 @@ public class UnifiedFlightController : MonoBehaviour
         
         if (enableDebugLogging)
         {
-            Debug.Log($"UnifiedFlightController: Initialized on {gameObject.name} with speed {flightData.airspeed:F1} MPH");
+            Debug.Log($"UnifiedFlightController: Initialized on {gameObject.name} with speed {flightData.airspeed:F1} MPH, " +
+                     $"Initial throttle: {throttlePosition*100:F0}%");
         }
     }
     
