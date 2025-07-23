@@ -477,24 +477,7 @@ public class EnemyAI : MonoBehaviour
                 Debug.Log($"EnemyAI: '{enemyData.EnemyName}' destroyed with realistic explosion!");
             }
         }
-        // Fallback to assigned explosion effect
-        else if (enemyData.ExplosionEffect != null)
-        {
-            GameObject explosion = Instantiate(enemyData.ExplosionEffect, cachedTransform.position, cachedTransform.rotation);
-
-            // Auto-destroy explosion if it doesn't have AutoDestroy component
-            var autoDestroy = explosion.GetComponent<AutoDestroy>();
-            if (autoDestroy == null)
-            {
-                Destroy(explosion, 3f);
-            }
-
-            if (showDebugInfo)
-            {
-                Debug.Log($"EnemyAI: '{enemyData.EnemyName}' destroyed with assigned explosion effect!");
-            }
-        }
-        // Final fallback to simple explosion
+        // Fallback to simple explosion if realistic explosion fails
         else
         {
             CreateSimpleExplosionEffect();
@@ -503,12 +486,6 @@ public class EnemyAI : MonoBehaviour
             {
                 Debug.Log($"EnemyAI: '{enemyData.EnemyName}' destroyed with simple explosion fallback!");
             }
-        }
-
-        // Play explosion sound
-        if (audioSource != null && enemyData.ExplosionSound != null)
-        {
-            audioSource.PlayOneShot(enemyData.ExplosionSound);
         }
 
         // Notify enemy manager (if exists) before destroying

@@ -730,14 +730,14 @@ MonoBehaviour:
   availableEnemyTypes:
   - {fileID: 11400000, guid: efa7c0bb85388f246bfa1970c9677602, type: 2}
   - {fileID: 11400000, guid: 9e12564668b36774e96f0d884f9e2835, type: 2}
-  maxActiveEnemies: 10
-  enemyCleanupDistance: 50
+  maxActiveEnemies: 5
+  enemyCleanupDistance: 500
   enableDifficultyScaling: 0
-  difficultyScaleDistance: 100
+  difficultyScaleDistance: 500
   healthScaleMultiplier: 1.2
   damageScaleMultiplier: 1.15
   fireRateScaleMultiplier: 1.1
-  spawnCooldown: 2
+  spawnCooldown: 0
   spawnChancePerChunk: 0.9
   maxEnemiesPerChunk: 3
   updateInterval: 0.2
@@ -3400,7 +3400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1367771316}
-  - component: {fileID: 1367771315}
+  - component: {fileID: 1367771317}
   m_Layer: 0
   m_Name: ExplosionDiagnostic
   m_TagString: Untagged
@@ -3408,24 +3408,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1367771315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1367771314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a53b266ba9ddf046bee484891beb8f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDebugLogging: 1
-  enableVisualDebug: 1
-  testOnStart: 1
-  diagnosticKey: 282
-  testForce: 1000
-  applyTestForces: 1
 --- !u!4 &1367771316
 Transform:
   m_ObjectHideFlags: 0
@@ -3441,6 +3423,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1367771317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367771314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e1c5351f53cc974eaecd767d6cc7c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableDiagnostics: 1
+  logPhysicsSettings: 1
+  logForceApplications: 1
+  logVelocityChanges: 1
+  diagnosticDuration: 10
+  showRealTimeStats: 1
+  maxShardsToTrack: 10
 --- !u!1 &1462547550
 GameObject:
   m_ObjectHideFlags: 0
@@ -5185,7 +5186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9290cc6cab1244e9f7578d30f92644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 20
+  minSpeed: 0
   maxSpeed: 120
   throttleAcceleration: 20
   boostMultiplier: 2

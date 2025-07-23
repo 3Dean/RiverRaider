@@ -43,10 +43,8 @@ public class EnemyTypeData : ScriptableObject
     [SerializeField] private float spawnWeight = 1f; // Probability weight for spawning
     [SerializeField] private int maxSimultaneous = 2; // Max of this type active at once
     
-    [Header("Effects")]
-    [SerializeField] private GameObject explosionEffect;
+    [Header("Audio")]
     [SerializeField] private AudioClip[] shootSounds;
-    [SerializeField] private AudioClip explosionSound;
     
     // Public properties for easy access
     public string EnemyName => enemyName;
@@ -79,9 +77,7 @@ public class EnemyTypeData : ScriptableObject
     public float SpawnWeight => spawnWeight;
     public int MaxSimultaneous => maxSimultaneous;
     
-    public GameObject ExplosionEffect => explosionEffect;
     public AudioClip[] ShootSounds => shootSounds;
-    public AudioClip ExplosionSound => explosionSound;
     
     /// <summary>
     /// Calculate effective damage after armor reduction
@@ -197,9 +193,7 @@ public class EnemyTypeData : ScriptableObject
         scaledData.spawnWeight = spawnWeight;
         scaledData.maxSimultaneous = maxSimultaneous;
         
-        scaledData.explosionEffect = explosionEffect;
         scaledData.shootSounds = shootSounds;
-        scaledData.explosionSound = explosionSound;
         
         return scaledData;
     }

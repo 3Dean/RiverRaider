@@ -3,28 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Realistic helicopter explosion system with physics-based shards
-/// Handles 51 individual pieces with mixed explosion forces and terrain interaction
+/// FIXED VERSION: Realistic helicopter explosion system with proper physics
+/// This version addresses the floating/blasting issues by ensuring proper force application and physics settings
 /// </summary>
-public class HelicopterExplosion : MonoBehaviour
+public class HelicopterExplosionFixed : MonoBehaviour
 {
-    [Header("Explosion Parameters")]
-    [SerializeField] private float baseExplosionForce = 300f; // Moderate force for realistic separation
-    [SerializeField] private float upwardForceMultiplier = 0.4f; // Moderate upward force
-    [SerializeField] private float directionalForceMultiplier = 0.3f; // Some directional force
-    [SerializeField] private float randomnessMultiplier = 0.2f; // Some randomness for natural look
-    [SerializeField] private float explosionRadius = 5f; // Reasonable explosion radius
+    [Header("Explosion Parameters - FIXED")]
+    [SerializeField] private float baseExplosionForce = 75f; // Realistic force for natural movement
+    [SerializeField] private float upwardForceMultiplier = 0.3f; // Moderate upward bias
+    [SerializeField] private float directionalForceMultiplier = 0.2f; // Subtle directional force
+    [SerializeField] private float randomnessMultiplier = 0.1f; // Minimal randomness
+    [SerializeField] private float explosionRadius = 5f;
     
-    [Header("Physics Settings")]
-    [SerializeField] private float forceVariation = 0.1f; // ±10% force variation - minimal
-    [SerializeField] private float massScaling = 1.0f; // No mass scaling - keep forces consistent
-    [SerializeField] private float minForceMultiplier = 0.8f; // Reduced minimum clamp
-    [SerializeField] private float maxForceMultiplier = 1.2f; // Reduced maximum clamp
-    [SerializeField] private float colliderActivationDelay = 1.5f; // Increased delay before enabling colliders
+    [Header("Physics Settings - FIXED")]
+    [SerializeField] private float shardMass = 2.0f; // Increased mass for stability
+    [SerializeField] private float shardDrag = 1.5f; // Proper air resistance
+    [SerializeField] private float shardAngularDrag = 2.0f; // Rotational damping
+    [SerializeField] private bool forceGravityEnabled = true; // Ensure gravity works
+    [SerializeField] private float forceVariation = 0.1f; // Minimal variation
+    [SerializeField] private float colliderActivationDelay = 1.0f; // Delay before colliders activate
     
     [Header("Cleanup")]
     [SerializeField] private float shardLifetime = 15f;
-    [SerializeField] private float cleanupDistance = 200f; // Increased from 100f
+    [SerializeField] private float cleanupDistance = 200f;
     [SerializeField] private bool enableDistanceCleanup = true;
     
     [Header("Visual Effects")]
@@ -39,10 +40,10 @@ public class HelicopterExplosion : MonoBehaviour
     [SerializeField] private AudioClip fireCracklingSound;
     [SerializeField] private float audioVolume = 1f;
     
-    [Header("Debug")]
+    [Header("Debug - FIXED")]
     [SerializeField] private bool showDebugInfo = true;
+    [SerializeField] private bool enableVerboseLogging = false; // Reduced logging for performance
     [SerializeField] private bool showForceGizmos = false;
-    [SerializeField] private bool enableVerboseLogging = true;
 
     // Internal components
     private List<ExplosionShard> explosionShards = new List<ExplosionShard>();
@@ -80,19 +81,18 @@ public class HelicopterExplosion : MonoBehaviour
 
     void Start()
     {
-        // Initialize all shards
-        InitializeShards();
+        // Initialize all shards with FIXED physics settings
+        InitializeShardsFixed();
         
         // Start explosion immediately
         if (!hasExploded)
         {
-            StartCoroutine(ExecuteExplosion());
+            StartCoroutine(ExecuteExplosionFixed());
         }
     }
 
     void Update()
     {
-        // Don't cleanup until explosion has actually started
         if (!hasExploded) return;
 
         // Handle distance-based cleanup
@@ -106,7 +106,7 @@ public class HelicopterExplosion : MonoBehaviour
             }
         }
 
-        // Handle lifetime cleanup - but only after explosion has been running for a while
+        // Handle lifetime cleanup
         if (Time.time - explosionStartTime > shardLifetime)
         {
             CleanupExplosion();
@@ -114,9 +114,9 @@ public class HelicopterExplosion : MonoBehaviour
     }
 
     /// <summary>
-    /// Initialize all explosion shards
+    /// FIXED: Initialize all explosion shards with proper physics settings
     /// </summary>
-    private void InitializeShards()
+    private void InitializeShardsFixed()
     {
         // Find all rigidbodies in children (the 51 shards)
         Rigidbody[] shardRigidbodies = GetComponentsInChildren<Rigidbody>();
@@ -124,6 +124,9 @@ public class HelicopterExplosion : MonoBehaviour
         foreach (Rigidbody rb in shardRigidbodies)
         {
             if (rb.transform == transform) continue; // Skip parent
+
+            // CRITICAL FIX: Apply proper physics settings to each shard
+            ConfigureShardPhysics(rb);
 
             // Add ExplosionShard component if not present
             ExplosionShard shard = rb.GetComponent<ExplosionShard>();
@@ -133,13 +136,13 @@ public class HelicopterExplosion : MonoBehaviour
             }
 
             // Initialize the shard
-            shard.Initialize(this, metalCollisionSounds);
+            shard.Initialize(null, metalCollisionSounds); // Pass null for parent to avoid circular reference
             explosionShards.Add(shard);
 
             // Initially disable physics until explosion
             rb.isKinematic = true;
             
-            // CRITICAL FIX: Disable all colliders initially to prevent overlapping collision gridlock
+            // CRITICAL FIX: Disable all colliders initially to prevent collision gridlock
             Collider[] colliders = rb.GetComponents<Collider>();
             foreach (Collider col in colliders)
             {
@@ -151,14 +154,48 @@ public class HelicopterExplosion : MonoBehaviour
 
         if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Initialized {activeShards} shards with colliders disabled");
+            Debug.Log($"HelicopterExplosionFixed: Initialized {activeShards} shards with FIXED physics settings");
         }
     }
 
     /// <summary>
-    /// Execute the explosion sequence
+    /// CRITICAL FIX: Configure proper physics settings for each shard
     /// </summary>
-    private IEnumerator ExecuteExplosion()
+    private void ConfigureShardPhysics(Rigidbody rb)
+    {
+        // Set proper mass for stability
+        rb.mass = shardMass;
+        
+        // Set proper drag for realistic air resistance
+        rb.drag = shardDrag;
+        rb.angularDrag = shardAngularDrag;
+        
+        // FORCE gravity to be enabled
+        rb.useGravity = forceGravityEnabled;
+        
+        // Ensure no constraints
+        rb.constraints = RigidbodyConstraints.None;
+        
+        // Set reasonable center of mass
+        rb.centerOfMass = Vector3.zero;
+        
+        // Remove any physics materials that might cause bouncing
+        Collider collider = rb.GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.material = null; // Remove any bouncy materials
+        }
+        
+        if (enableVerboseLogging)
+        {
+            Debug.Log($"PHYSICS CONFIGURED: {rb.name} - Mass:{rb.mass}, Drag:{rb.drag}, Gravity:{rb.useGravity}");
+        }
+    }
+
+    /// <summary>
+    /// FIXED: Execute the explosion sequence with proper force application
+    /// </summary>
+    private IEnumerator ExecuteExplosionFixed()
     {
         if (hasExploded) yield break;
 
@@ -180,15 +217,15 @@ public class HelicopterExplosion : MonoBehaviour
         // Small delay to let separation take effect
         yield return new WaitForSeconds(0.05f);
         
-        // Apply explosion forces to all shards
-        ApplyExplosionForces();
+        // Apply FIXED explosion forces to all shards
+        ApplyExplosionForcesFixed();
 
         // Start coroutine to re-enable colliders after shards have separated
         StartCoroutine(EnableCollidersAfterDelay());
 
         if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Explosion executed with {activeShards} shards");
+            Debug.Log($"HelicopterExplosionFixed: Explosion executed with {activeShards} shards using FIXED force calculation");
         }
     }
 
@@ -198,11 +235,6 @@ public class HelicopterExplosion : MonoBehaviour
     private void SeparateShards()
     {
         int shardsSeparated = 0;
-        
-        if (showDebugInfo)
-        {
-            Debug.Log($"HelicopterExplosion: Separating {explosionShards.Count} shards to prevent collision gridlock");
-        }
         
         foreach (ExplosionShard shard in explosionShards)
         {
@@ -219,7 +251,7 @@ public class HelicopterExplosion : MonoBehaviour
             
             // Normalize and apply small separation distance
             Vector3 separationDirection = directionFromCenter.normalized;
-            float separationDistance = Random.Range(0.2f, 0.8f); // Small random separation
+            float separationDistance = Random.Range(0.2f, 0.8f);
             
             // Move shard away from center
             shard.transform.position += separationDirection * separationDistance;
@@ -229,70 +261,45 @@ public class HelicopterExplosion : MonoBehaviour
         
         if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Separated {shardsSeparated} shards");
+            Debug.Log($"HelicopterExplosionFixed: Separated {shardsSeparated} shards");
         }
     }
 
     /// <summary>
-    /// Apply realistic explosion forces to all shards
+    /// FIXED: Apply realistic explosion forces with proper calculation
     /// </summary>
-    private void ApplyExplosionForces()
+    private void ApplyExplosionForcesFixed()
     {
         int forcesApplied = 0;
-        int nullShards = 0;
-        int nullRigidbodies = 0;
         
-        if (enableVerboseLogging)
+        if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Starting to apply forces to {explosionShards.Count} shards");
+            Debug.Log($"HelicopterExplosionFixed: Applying FIXED forces (Base Force: {baseExplosionForce}) to {explosionShards.Count} shards");
         }
         
         foreach (ExplosionShard shard in explosionShards)
         {
-            if (shard == null)
-            {
-                nullShards++;
-                continue;
-            }
-            
-            if (shard.Rigidbody == null)
-            {
-                nullRigidbodies++;
-                if (enableVerboseLogging)
-                {
-                    Debug.LogWarning($"HelicopterExplosion: Shard {shard.name} has no Rigidbody!");
-                }
-                continue;
-            }
+            if (shard == null || shard.Rigidbody == null) continue;
 
             // Enable physics
-            bool wasKinematic = shard.Rigidbody.isKinematic;
             shard.Rigidbody.isKinematic = false;
             
-            // CRITICAL FIX: Ensure proper physics settings with balanced drag
-            shard.Rigidbody.useGravity = true;
-            shard.Rigidbody.drag = 1.5f; // Moderate air resistance - allows gravity to work but slows pieces
-            shard.Rigidbody.angularDrag = 2.0f; // Moderate rotational damping for controlled spinning
-            
-            // GRAVITY VERIFICATION: Force gravity to be enabled and log it
-            if (enableVerboseLogging)
-            {
-                Debug.Log($"HelicopterExplosion: Shard {shard.name} - Gravity: {shard.Rigidbody.useGravity}, Drag: {shard.Rigidbody.drag}, Mass: {shard.Rigidbody.mass}");
-            }
+            // DOUBLE-CHECK: Ensure physics settings are correct
+            VerifyShardPhysics(shard.Rigidbody);
 
-            // Calculate explosion force for this shard
-            Vector3 force = CalculateExplosionForce(shard.transform.position, shard.Rigidbody.mass);
+            // Calculate FIXED explosion force for this shard
+            Vector3 force = CalculateExplosionForceFixed(shard.transform.position, shard.Rigidbody.mass);
             
             if (enableVerboseLogging)
             {
-                Debug.Log($"HelicopterExplosion: Applying force {force.magnitude:F1} to shard {shard.name} (was kinematic: {wasKinematic})");
+                Debug.Log($"HelicopterExplosionFixed: Applying force {force.magnitude:F1} to shard {shard.name}");
             }
             
-            // Apply the force
+            // Apply the force using ForceMode.Impulse for immediate effect
             shard.Rigidbody.AddForce(force, ForceMode.Impulse);
             
-            // Add random torque for realistic spinning
-            Vector3 torque = Random.insideUnitSphere * (force.magnitude * 0.1f);
+            // Add controlled random torque for realistic spinning
+            Vector3 torque = Random.insideUnitSphere * (force.magnitude * 0.05f); // Reduced torque multiplier
             shard.Rigidbody.AddTorque(torque, ForceMode.Impulse);
 
             // Activate the shard
@@ -303,82 +310,100 @@ public class HelicopterExplosion : MonoBehaviour
         
         if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Applied forces to {forcesApplied} shards (Null shards: {nullShards}, Missing Rigidbodies: {nullRigidbodies})");
-        }
-        
-        // Check if any forces were actually applied
-        if (forcesApplied == 0)
-        {
-            Debug.LogError("HelicopterExplosion: NO FORCES WERE APPLIED! This is why shards aren't moving!");
+            Debug.Log($"HelicopterExplosionFixed: Applied FIXED forces to {forcesApplied} shards");
         }
     }
 
     /// <summary>
-    /// Calculate realistic explosion force for a shard at given position
+    /// CRITICAL FIX: Verify and correct physics settings on each shard
     /// </summary>
-    private Vector3 CalculateExplosionForce(Vector3 shardPosition, float shardMass)
+    private void VerifyShardPhysics(Rigidbody rb)
+    {
+        bool needsCorrection = false;
+        
+        if (rb.mass != shardMass)
+        {
+            rb.mass = shardMass;
+            needsCorrection = true;
+        }
+        
+        if (rb.drag != shardDrag)
+        {
+            rb.drag = shardDrag;
+            needsCorrection = true;
+        }
+        
+        if (rb.angularDrag != shardAngularDrag)
+        {
+            rb.angularDrag = shardAngularDrag;
+            needsCorrection = true;
+        }
+        
+        if (!rb.useGravity)
+        {
+            rb.useGravity = true;
+            needsCorrection = true;
+        }
+        
+        if (needsCorrection && enableVerboseLogging)
+        {
+            Debug.LogWarning($"PHYSICS CORRECTED: {rb.name} had incorrect settings - now fixed");
+        }
+    }
+
+    /// <summary>
+    /// FIXED: Calculate realistic explosion force with proper limits
+    /// </summary>
+    private Vector3 CalculateExplosionForceFixed(Vector3 shardPosition, float shardMass)
     {
         // Distance from explosion center
         Vector3 directionFromCenter = (shardPosition - explosionCenter);
-        float distance = directionFromCenter.magnitude;
+        float distance = Mathf.Max(directionFromCenter.magnitude, 0.5f); // Minimum distance to prevent division by zero
         
         // Normalize direction
         Vector3 radialDirection = directionFromCenter.normalized;
 
-        // Base radial force (decreases with distance) - FIXED: Cap the amplification
-        float distanceFactor = Mathf.Clamp01(explosionRadius / Mathf.Max(distance, 1f));
-        // This prevents massive amplification when pieces are very close to center
-        distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 1.0f); // Cap between 10% and 100%
+        // FIXED: Proper distance falloff calculation
+        float distanceFactor = explosionRadius / (distance + 1f); // +1 to prevent extreme amplification
+        distanceFactor = Mathf.Clamp(distanceFactor, 0.2f, 1.0f); // Reasonable limits
+        
+        // Base radial force
         Vector3 radialForce = radialDirection * baseExplosionForce * distanceFactor;
 
-        // Add upward bias for dramatic effect
+        // Add controlled upward bias
         Vector3 upwardForce = Vector3.up * baseExplosionForce * upwardForceMultiplier * distanceFactor;
 
-        // Add directional force if damage direction is specified
+        // Add directional force if specified
         Vector3 directionalForce = Vector3.zero;
         if (damageDirection != Vector3.zero)
         {
             directionalForce = damageDirection.normalized * baseExplosionForce * directionalForceMultiplier * distanceFactor;
         }
 
-        // Add randomness for natural look
+        // Add minimal randomness
         Vector3 randomForce = Random.insideUnitSphere * baseExplosionForce * randomnessMultiplier * distanceFactor;
 
         // Combine all forces
         Vector3 totalForce = radialForce + upwardForce + directionalForce + randomForce;
 
-        // Apply mass scaling (heavier objects get less force)
-        float massScale = Mathf.Lerp(1f, massScaling, shardMass / 2f); // Assuming max mass of 2
+        // FIXED: Apply reasonable mass scaling (heavier objects get proportionally less force)
+        float massScale = 1f / Mathf.Sqrt(shardMass); // Square root scaling for more realistic physics
         totalForce *= massScale;
 
-        // Apply random variation
+        // Apply minimal variation
         float variation = Random.Range(1f - forceVariation, 1f + forceVariation);
         totalForce *= variation;
 
-        // Clamp force magnitude
-        float forceMagnitude = totalForce.magnitude;
-        float clampedMagnitude = Mathf.Clamp(forceMagnitude, 
-            baseExplosionForce * minForceMultiplier, 
-            baseExplosionForce * maxForceMultiplier);
-        
-        if (forceMagnitude > 0)
+        // FIXED: Clamp to reasonable force magnitude
+        float maxForce = baseExplosionForce * 1.5f; // Maximum 150% of base force
+        if (totalForce.magnitude > maxForce)
         {
-            totalForce = totalForce.normalized * clampedMagnitude;
+            totalForce = totalForce.normalized * maxForce;
         }
 
-        // DETAILED DEBUG LOGGING
         if (enableVerboseLogging)
         {
-            Debug.Log($"FORCE CALCULATION DEBUG:" +
-                $"\n  Base Force: {baseExplosionForce}" +
-                $"\n  Distance: {distance:F2}, Factor: {distanceFactor:F2}" +
-                $"\n  Radial Force: {radialForce.magnitude:F2}" +
-                $"\n  Upward Force: {upwardForce.magnitude:F2}" +
-                $"\n  Random Force: {randomForce.magnitude:F2}" +
-                $"\n  Before Mass/Variation: {totalForce.magnitude:F2}" +
-                $"\n  Mass Scale: {massScale:F2}, Variation: {variation:F2}" +
-                $"\n  Before Clamp: {(totalForce * massScale * variation).magnitude:F2}" +
-                $"\n  FINAL FORCE: {totalForce.magnitude:F2}");
+            Debug.Log($"FIXED FORCE CALC: Distance:{distance:F1}, Factor:{distanceFactor:F2}, Mass Scale:{massScale:F2}, Final Force:{totalForce.magnitude:F1}");
         }
 
         return totalForce;
@@ -478,7 +503,7 @@ public class HelicopterExplosion : MonoBehaviour
     }
 
     /// <summary>
-    /// Re-enable colliders after shards have separated to prevent collision gridlock
+    /// Re-enable colliders after shards have separated
     /// </summary>
     private IEnumerator EnableCollidersAfterDelay()
     {
@@ -501,7 +526,7 @@ public class HelicopterExplosion : MonoBehaviour
         
         if (showDebugInfo)
         {
-            Debug.Log($"HelicopterExplosion: Re-enabled {collidersEnabled} colliders after {colliderActivationDelay}s delay");
+            Debug.Log($"HelicopterExplosionFixed: Re-enabled {collidersEnabled} colliders after {colliderActivationDelay}s delay");
         }
     }
 
@@ -543,7 +568,7 @@ public class HelicopterExplosion : MonoBehaviour
     {
         if (showDebugInfo)
         {
-            Debug.Log("HelicopterExplosion: Cleaning up explosion");
+            Debug.Log("HelicopterExplosionFixed: Cleaning up explosion");
         }
 
         // Destroy all remaining shards
@@ -557,21 +582,6 @@ public class HelicopterExplosion : MonoBehaviour
 
         // Destroy the explosion object
         Destroy(gameObject);
-    }
-
-    /// <summary>
-    /// Get explosion statistics for debugging
-    /// </summary>
-    public ExplosionStats GetExplosionStats()
-    {
-        return new ExplosionStats
-        {
-            totalShards = explosionShards.Count,
-            activeShards = activeShards,
-            explosionTime = hasExploded ? Time.time - explosionStartTime : 0f,
-            explosionForce = baseExplosionForce,
-            explosionRadius = explosionRadius
-        };
     }
 
     void OnDrawGizmosSelected()
@@ -588,32 +598,5 @@ public class HelicopterExplosion : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawRay(transform.position, damageDirection * 5f);
         }
-
-        // Draw force vectors for each shard (if exploded)
-        if (hasExploded && showDebugInfo)
-        {
-            Gizmos.color = Color.green;
-            foreach (ExplosionShard shard in explosionShards)
-            {
-                if (shard != null && shard.Rigidbody != null)
-                {
-                    Vector3 velocity = shard.Rigidbody.velocity;
-                    Gizmos.DrawRay(shard.transform.position, velocity * 0.1f);
-                }
-            }
-        }
     }
-}
-
-/// <summary>
-/// Statistics structure for explosion debugging
-/// </summary>
-[System.Serializable]
-public struct ExplosionStats
-{
-    public int totalShards;
-    public int activeShards;
-    public float explosionTime;
-    public float explosionForce;
-    public float explosionRadius;
 }

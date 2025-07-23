@@ -22,8 +22,9 @@ public class ExplosionShard : MonoBehaviour
     
     [Header("Physics")]
     [SerializeField] private float bounceThreshold = 2f;
-    [SerializeField] private float stickingVelocityThreshold = 1f;
+    [SerializeField] private float stickingVelocityThreshold = 0.2f; // Much lower threshold
     [SerializeField] private bool canStickToTerrain = true;
+    [SerializeField] private float minimumFallTime = 2f; // Don't stick until after falling for a while
     
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = false;
@@ -190,11 +191,18 @@ public class ExplosionShard : MonoBehaviour
     {
         if (cachedRigidbody == null || isStuck) return;
 
+        // Don't allow sticking until minimum fall time has passed
+        float timeSinceActivation = Time.time - activationTime;
+        if (timeSinceActivation < minimumFallTime)
+        {
+            return;
+        }
+
         float velocity = cachedRigidbody.velocity.magnitude;
         float angularVelocity = cachedRigidbody.angularVelocity.magnitude;
 
-        // Stick if moving very slowly
-        if (velocity < stickingVelocityThreshold && angularVelocity < 1f)
+        // Only stick if moving VERY slowly AND has had collisions (indicating it's on ground)
+        if (velocity < stickingVelocityThreshold && angularVelocity < 0.5f && collisionCount > 0)
         {
             StickToSurface();
         }
@@ -319,6 +327,20 @@ public class ExplosionShard : MonoBehaviour
         shape.shapeType = ParticleSystemShapeType.Hemisphere;
         shape.radius = 0.2f;
         
+        // CRITICAL FIX: Assign material to prevent pink particles
+        var renderer = particles.GetComponent<ParticleSystemRenderer>();
+        // Try to use existing Sparks material, fallback to Default-Particle
+        Material sparksMaterial = Resources.Load<Material>("Materials/Sparks");
+        if (sparksMaterial == null)
+        {
+            // Use Unity's default particle material
+            sparksMaterial = Resources.GetBuiltinResource<Material>("Default-Particle.mat");
+        }
+        if (sparksMaterial != null)
+        {
+            renderer.material = sparksMaterial;
+        }
+        
         // Orient towards collision normal
         sparkObject.transform.rotation = Quaternion.LookRotation(normal);
         
@@ -365,6 +387,20 @@ public class ExplosionShard : MonoBehaviour
         var shape = particles.shape;
         shape.shapeType = ParticleSystemShapeType.Sphere;
         shape.radius = 0.1f;
+        
+        // CRITICAL FIX: Assign material to prevent pink particles
+        var renderer = particles.GetComponent<ParticleSystemRenderer>();
+        // Try to use existing Fire material, fallback to Default-Particle
+        Material fireMaterial = Resources.Load<Material>("Materials/Fire");
+        if (fireMaterial == null)
+        {
+            // Use Unity's default particle material
+            fireMaterial = Resources.GetBuiltinResource<Material>("Default-Particle.mat");
+        }
+        if (fireMaterial != null)
+        {
+            renderer.material = fireMaterial;
+        }
         
         activeFireTrail = fireTrail;
     }
