@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39a463fa6636e40449fc90543a697856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseExplosionForce: 0.1
+  baseExplosionForce: 50
   upwardForceMultiplier: 0.1
   directionalForceMultiplier: 0.3
   randomnessMultiplier: 0.2
@@ -69,6 +69,7 @@ MonoBehaviour:
   showDebugInfo: 1
   showForceGizmos: 0
   enableVerboseLogging: 1
+  useInspectorValuesOnly: 1
 --- !u!1001 &3198679428131007250
 PrefabInstance:
   m_ObjectHideFlags: 0
