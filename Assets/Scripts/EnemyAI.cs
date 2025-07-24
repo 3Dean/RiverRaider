@@ -530,7 +530,7 @@ public class EnemyAI : MonoBehaviour
             }
             
             // Configure the explosion
-            HelicopterExplosion explosionComponent = explosion.GetComponent<HelicopterExplosion>();
+            HelicopterExplosionFixed explosionComponent = explosion.GetComponent<HelicopterExplosionFixed>();
             if (explosionComponent != null)
             {
                 if (showDebugInfo)
