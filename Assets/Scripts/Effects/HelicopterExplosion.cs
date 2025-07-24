@@ -9,10 +9,10 @@ using System.Collections.Generic;
 public class HelicopterExplosion : MonoBehaviour
 {
     [Header("Explosion Parameters")]
-    [SerializeField] private float baseExplosionForce = 300f; // Moderate force for realistic separation
-    [SerializeField] private float upwardForceMultiplier = 0.4f; // Moderate upward force
-    [SerializeField] private float directionalForceMultiplier = 0.3f; // Some directional force
-    [SerializeField] private float randomnessMultiplier = 0.2f; // Some randomness for natural look
+    [SerializeField] private float baseExplosionForce = 80f; // Reduced force for realistic separation
+    [SerializeField] private float upwardForceMultiplier = 0.3f; // Moderate upward force
+    [SerializeField] private float directionalForceMultiplier = 0.2f; // Reduced directional force
+    [SerializeField] private float randomnessMultiplier = 0.15f; // Reduced randomness for natural look
     [SerializeField] private float explosionRadius = 5f; // Reasonable explosion radius
     
     [Header("Physics Settings")]
@@ -43,6 +43,7 @@ public class HelicopterExplosion : MonoBehaviour
     [SerializeField] private bool showDebugInfo = true;
     [SerializeField] private bool showForceGizmos = false;
     [SerializeField] private bool enableVerboseLogging = true;
+    [SerializeField] private bool useInspectorValuesOnly = false; // Override EnemyAI parameters
 
     // Internal components
     private List<ExplosionShard> explosionShards = new List<ExplosionShard>();
@@ -325,41 +326,53 @@ public class HelicopterExplosion : MonoBehaviour
         // Normalize direction
         Vector3 radialDirection = directionFromCenter.normalized;
 
-        // Base radial force (decreases with distance) - FIXED: Cap the amplification
-        float distanceFactor = Mathf.Clamp01(explosionRadius / Mathf.Max(distance, 1f));
-        // This prevents massive amplification when pieces are very close to center
-        distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 1.0f); // Cap between 10% and 100%
-        Vector3 radialForce = radialDirection * baseExplosionForce * distanceFactor;
+        // Improved distance factor with smoother falloff
+        float distanceFactor = Mathf.Clamp01(explosionRadius / Mathf.Max(distance, 0.5f));
+        // Use a curve for more natural falloff
+        distanceFactor = Mathf.Pow(distanceFactor, 0.7f); // Gentler falloff curve
+        distanceFactor = Mathf.Clamp(distanceFactor, 0.3f, 1.0f); // Minimum 30% force
 
-        // Add upward bias for dramatic effect
-        Vector3 upwardForce = Vector3.up * baseExplosionForce * upwardForceMultiplier * distanceFactor;
+        // FIXED: Use base force as the total budget, not per-component
+        float totalForceAmount = baseExplosionForce * distanceFactor;
 
-        // Add directional force if damage direction is specified
-        Vector3 directionalForce = Vector3.zero;
+        // Calculate direction components (these are normalized directions, not forces)
+        Vector3 primaryDirection = radialDirection;
+        
+        // Add upward bias to the direction
+        primaryDirection += Vector3.up * upwardForceMultiplier;
+        
+        // Add directional bias if damage direction is specified
         if (damageDirection != Vector3.zero)
         {
-            directionalForce = damageDirection.normalized * baseExplosionForce * directionalForceMultiplier * distanceFactor;
+            primaryDirection += damageDirection.normalized * directionalForceMultiplier;
         }
 
-        // Add randomness for natural look
-        Vector3 randomForce = Random.insideUnitSphere * baseExplosionForce * randomnessMultiplier * distanceFactor;
+        // Add small random component for natural variation
+        Vector3 randomDirection = Random.insideUnitSphere * randomnessMultiplier;
+        primaryDirection += randomDirection;
 
-        // Combine all forces
-        Vector3 totalForce = radialForce + upwardForce + directionalForce + randomForce;
+        // Normalize the combined direction
+        primaryDirection = primaryDirection.normalized;
+
+        // Apply the total force amount in the calculated direction
+        Vector3 totalForce = primaryDirection * totalForceAmount;
 
         // Apply mass scaling (heavier objects get less force)
-        float massScale = Mathf.Lerp(1f, massScaling, shardMass / 2f); // Assuming max mass of 2
+        float massScale = Mathf.Lerp(1f, massScaling, Mathf.Clamp01(shardMass / 2f));
         totalForce *= massScale;
 
         // Apply random variation
         float variation = Random.Range(1f - forceVariation, 1f + forceVariation);
         totalForce *= variation;
 
-        // Clamp force magnitude
+        // Absolute force limits to prevent excessive forces
         float forceMagnitude = totalForce.magnitude;
-        float clampedMagnitude = Mathf.Clamp(forceMagnitude, 
-            baseExplosionForce * minForceMultiplier, 
-            baseExplosionForce * maxForceMultiplier);
+        
+        // Adjust limits based on whether using inspector values
+        float maxAbsoluteForce = useInspectorValuesOnly ? 1000f : 150f; // Allow higher max when testing
+        float minAbsoluteForce = useInspectorValuesOnly ? 0.01f : 20f;  // Allow much lower min when testing
+        
+        float clampedMagnitude = Mathf.Clamp(forceMagnitude, minAbsoluteForce, maxAbsoluteForce);
         
         if (forceMagnitude > 0)
         {
@@ -369,15 +382,13 @@ public class HelicopterExplosion : MonoBehaviour
         // DETAILED DEBUG LOGGING
         if (enableVerboseLogging)
         {
-            Debug.Log($"FORCE CALCULATION DEBUG:" +
-                $"\n  Base Force: {baseExplosionForce}" +
+            Debug.Log($"FORCE CALCULATION DEBUG (FIXED):" +
+                $"\n  Base Force Budget: {baseExplosionForce}" +
                 $"\n  Distance: {distance:F2}, Factor: {distanceFactor:F2}" +
-                $"\n  Radial Force: {radialForce.magnitude:F2}" +
-                $"\n  Upward Force: {upwardForce.magnitude:F2}" +
-                $"\n  Random Force: {randomForce.magnitude:F2}" +
-                $"\n  Before Mass/Variation: {totalForce.magnitude:F2}" +
+                $"\n  Force Amount: {totalForceAmount:F2}" +
+                $"\n  Direction: {primaryDirection}" +
                 $"\n  Mass Scale: {massScale:F2}, Variation: {variation:F2}" +
-                $"\n  Before Clamp: {(totalForce * massScale * variation).magnitude:F2}" +
+                $"\n  Before Clamp: {forceMagnitude:F2}" +
                 $"\n  FINAL FORCE: {totalForce.magnitude:F2}");
         }
 
@@ -518,9 +529,25 @@ public class HelicopterExplosion : MonoBehaviour
     /// </summary>
     public void SetExplosionParameters(float force, float radius, float upwardBias = 0.3f)
     {
-        baseExplosionForce = force;
-        explosionRadius = radius;
-        upwardForceMultiplier = upwardBias;
+        // Only apply if not using inspector values only
+        if (!useInspectorValuesOnly)
+        {
+            baseExplosionForce = force;
+            explosionRadius = radius;
+            upwardForceMultiplier = upwardBias;
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"HelicopterExplosion: Parameters set by script - Force: {force}, Radius: {radius}, Upward: {upwardBias}");
+            }
+        }
+        else
+        {
+            if (showDebugInfo)
+            {
+                Debug.Log($"HelicopterExplosion: Ignoring script parameters, using inspector values - Force: {baseExplosionForce}, Radius: {explosionRadius}, Upward: {upwardForceMultiplier}");
+            }
+        }
     }
 
     /// <summary>

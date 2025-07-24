@@ -530,7 +530,7 @@ public class EnemyAI : MonoBehaviour
             }
             
             // Configure the explosion
-            HelicopterExplosionFixed explosionComponent = explosion.GetComponent<HelicopterExplosionFixed>();
+            HelicopterExplosion explosionComponent = explosion.GetComponent<HelicopterExplosion>();
             if (explosionComponent != null)
             {
                 if (showDebugInfo)
@@ -542,14 +542,15 @@ public class EnemyAI : MonoBehaviour
                 explosionComponent.SetDamageDirection(damageDirection);
                 
                 // Customize explosion parameters based on enemy type
-                float explosionForce = 1000f;
-                float explosionRadius = 8f;
+                float explosionForce = 120f; // Reduced from 1000f to reasonable level
+                float explosionRadius = 6f;  // Slightly reduced radius
                 
                 if (enemyData != null)
                 {
-                    // Scale explosion based on enemy size/type
-                    explosionForce *= enemyData.MaxHealth / 100f; // Scale with health
-                    explosionRadius *= Mathf.Clamp(enemyData.MaxHealth / 100f, 0.5f, 2f); // Scale radius
+                    // Scale explosion based on enemy size/type (much more conservative)
+                    float healthScale = Mathf.Clamp(enemyData.MaxHealth / 100f, 0.8f, 1.5f); // Limited scaling
+                    explosionForce *= healthScale;
+                    explosionRadius *= Mathf.Clamp(healthScale, 0.8f, 1.3f); // Even more limited radius scaling
                 }
                 
                 explosionComponent.SetExplosionParameters(explosionForce, explosionRadius);

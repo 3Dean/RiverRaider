@@ -737,7 +737,7 @@ MonoBehaviour:
   healthScaleMultiplier: 1.2
   damageScaleMultiplier: 1.15
   fireRateScaleMultiplier: 1.1
-  spawnCooldown: 0
+  spawnCooldown: 2
   spawnChancePerChunk: 0.9
   maxEnemiesPerChunk: 3
   updateInterval: 0.2
@@ -3400,7 +3400,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1367771316}
-  - component: {fileID: 1367771317}
   m_Layer: 0
   m_Name: ExplosionDiagnostic
   m_TagString: Untagged
@@ -3423,25 +3422,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1367771317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1367771314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e1c5351f53cc974eaecd767d6cc7c2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDiagnostics: 1
-  logPhysicsSettings: 1
-  logForceApplications: 1
-  logVelocityChanges: 1
-  diagnosticDuration: 10
-  showRealTimeStats: 1
-  maxShardsToTrack: 10
 --- !u!1 &1462547550
 GameObject:
   m_ObjectHideFlags: 0
