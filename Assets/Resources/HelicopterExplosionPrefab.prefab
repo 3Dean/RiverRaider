@@ -58,11 +58,11 @@ MonoBehaviour:
   shardLifetime: 15
   cleanupDistance: 200
   enableDistanceCleanup: 1
-  explosionFlashPrefab: {fileID: 0}
-  fireAndSmokePrefab: {fileID: 0}
-  sparksPrefab: {fileID: 0}
-  createGroundScorch: 1
-  explosionSound: {fileID: 0}
+  explosionFlashPrefab: {fileID: 4179118533773534053, guid: bc36e3789bfff3045ad431e9d035efee, type: 3}
+  fireAndSmokePrefab: {fileID: 747843256105600504, guid: 2dcf3d7c7da785e4e90b2552128fb46c, type: 3}
+  sparksPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  createGroundScorch: 0
+  explosionSound: {fileID: 8300000, guid: 5d68e963c8b08664aadd1596a500a6e3, type: 3}
   metalCollisionSounds: []
   fireCracklingSound: {fileID: 0}
   audioVolume: 1
@@ -1268,8 +1268,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1347,8 +1347,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1426,8 +1426,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1505,8 +1505,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1584,8 +1584,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1663,8 +1663,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1742,8 +1742,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1821,8 +1821,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1900,8 +1900,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -1979,8 +1979,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2058,8 +2058,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2137,8 +2137,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2216,8 +2216,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2295,8 +2295,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2374,8 +2374,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2453,8 +2453,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2532,8 +2532,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2611,8 +2611,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2695,8 +2695,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2774,8 +2774,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2853,8 +2853,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -2932,8 +2932,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3011,8 +3011,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3090,8 +3090,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3169,8 +3169,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3248,8 +3248,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3327,8 +3327,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3406,8 +3406,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3485,8 +3485,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3564,8 +3564,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3643,8 +3643,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3722,8 +3722,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3801,8 +3801,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3880,8 +3880,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -3959,8 +3959,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4038,8 +4038,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4117,8 +4117,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4196,8 +4196,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4275,8 +4275,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4354,8 +4354,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4433,8 +4433,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4512,8 +4512,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4591,8 +4591,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4670,8 +4670,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4749,8 +4749,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4828,8 +4828,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4907,8 +4907,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -4986,8 +4986,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -5065,8 +5065,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -5144,8 +5144,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2
@@ -5223,8 +5223,8 @@ MonoBehaviour:
   collisionSoundThreshold: 3
   canCreateFire: 0
   fireChance: 0.1
-  sparkEffectPrefab: {fileID: 0}
-  fireTrailPrefab: {fileID: 0}
+  sparkEffectPrefab: {fileID: 972074387818491736, guid: 9cb3a68e958085340b5be62854224a67, type: 3}
+  fireTrailPrefab: {fileID: 387566730395860306, guid: 855c40d74bce56e4fb018ece002a79f8, type: 3}
   fadeOutBeforeDestroy: 1
   fadeOutDuration: 2
   bounceThreshold: 2

@@ -461,6 +461,9 @@ public class EnemyAI : MonoBehaviour
         isDead = true;
         currentState = EnemyState.Dead;
 
+        // CRITICAL FIX: Immediately hide the helicopter visual to prevent residual visibility during explosion
+        HideHelicopterVisual();
+
         // Calculate damage direction for directional explosion
         Vector3 damageDirection = Vector3.zero;
         if (playerTarget != null)
@@ -496,7 +499,39 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Destroy after a short delay to allow explosion to initialize
+        // Visual is already hidden, so this delay won't cause visual overlap
         Destroy(gameObject, 0.5f);
+    }
+
+    /// <summary>
+    /// Immediately hide the helicopter visual to prevent residual visibility during explosion
+    /// </summary>
+    private void HideHelicopterVisual()
+    {
+        // Disable all renderers in the helicopter to make it invisible
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer != null)
+            {
+                renderer.enabled = false;
+            }
+        }
+
+        // Also disable any colliders to prevent further interactions
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            if (collider != null)
+            {
+                collider.enabled = false;
+            }
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"EnemyAI: Hidden helicopter visual - disabled {renderers.Length} renderers and {colliders.Length} colliders");
+        }
     }
 
     /// <summary>

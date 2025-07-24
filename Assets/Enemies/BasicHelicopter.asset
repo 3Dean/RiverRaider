@@ -33,8 +33,6 @@ MonoBehaviour:
   detectionRange: 50
   retreatHealthThreshold: 0.3
   aggressionLevel: 1
-  spawnWeight: 1
-  maxSimultaneous: 2
-  explosionEffect: {fileID: 0}
+  spawnWeight: 5
+  maxSimultaneous: 10
   shootSounds: []
-  explosionSound: {fileID: 0}

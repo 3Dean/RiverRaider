@@ -266,17 +266,27 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     private EnemyTypeData SelectEnemyType()
     {
-        // Filter enemy types by difficulty tier
-        var availableTypes = availableEnemyTypes.Where(e => 
-            e != null && 
-            e.DifficultyTier <= currentDifficultyTier &&
-            CountActiveEnemiesOfType(e) < e.MaxSimultaneous
-        ).ToArray();
+        // Filter enemy types - ignore difficulty tier if scaling is disabled
+        var availableTypes = enableDifficultyScaling 
+            ? availableEnemyTypes.Where(e => 
+                e != null && 
+                e.DifficultyTier <= currentDifficultyTier &&
+                CountActiveEnemiesOfType(e) < e.MaxSimultaneous
+              ).ToArray()
+            : availableEnemyTypes.Where(e => 
+                e != null && 
+                CountActiveEnemiesOfType(e) < e.MaxSimultaneous
+              ).ToArray();
 
         if (availableTypes.Length == 0)
         {
             if (showDebugInfo)
-                Debug.LogWarning("EnemyManager: No available enemy types for current difficulty tier!");
+            {
+                string debugMessage = enableDifficultyScaling 
+                    ? $"EnemyManager: No available enemy types for current difficulty tier {currentDifficultyTier}!"
+                    : "EnemyManager: No available enemy types (all types at max simultaneous count)!";
+                Debug.LogWarning(debugMessage);
+            }
             return null;
         }
 
